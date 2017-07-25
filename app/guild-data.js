@@ -30,7 +30,10 @@ module.exports = class GuildData {
 				const diff = new DateDiff(now, Date.parse(activeDate));
 
 				if (diff.days() > this.inactiveThresholdDays) {
-					guild.members.get(userID).removeRole(this.activeRoleID).catch(Util.dateError);
+					const member = guild.members.get(userID);
+					if (member)
+						guild.members.get(userID).removeRole(this.activeRoleID).catch(Util.dateError);
+					
 					delete this.users[userID]; //un-save the user's last active time, as they don't matter anymore
 				}
 			});
