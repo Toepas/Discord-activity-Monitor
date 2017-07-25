@@ -38,16 +38,6 @@ Steps:
 
 Example: ![example image](http://i.imgur.com/s60poam.png)
 
-## Feedback
+## Need help?
 
-I have a Discord server set up for contact and support requests which you can join [here](https://discord.gg/SSkbwSJ)
-
-Please contact me with any issues you have regarding the bot, I am not a perfect programmer so it's totally possible that there are some! If any issues arise, I will do my best to fix them ASAP, and can usually respond pretty quickly.
-
-Whilst I can't make any promises, I welcome any feature suggestions or feedback regarding functionality, so don't hesitate to contact me if you wish :)
-
-Contact methods:
-- My [support discord server](https://discord.gg/SSkbwSJ) (preferred)
-- [Submit an issue via GitHub](https://github.com/benji7425/discord-bot-activity-monitor/issues)
-- [Use the contact email on my GitHub profile](https://github.com/benji7425)
-- Contact me directly on Discord: benji7425#1782
+Join my [support discord server](https://discord.gg/SSkbwSJ), or submit an issue via GitHub
