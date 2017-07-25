@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.1.1
+
+### Fixed
+
+- Fixed issue where data being present for a user who had left the respective guild caused an exception, stopping other users from being processed
+
 ## v2.1.0
 
 ### Updated
