@@ -7,7 +7,7 @@ const JsonFile = require("jsonfile");
 //my imports
 const GuildSetupHelper = require("./guild-setup-helper.js");
 const GuildData = require("./guild-data.js");
-const Util = require("./util.js");
+const DiscordUtil = require("discordjs-util");
 
 //gloabl vars
 const SAVE_FILE = "./guilds.json";
@@ -38,7 +38,7 @@ module.exports = (client) => {
 						writeFile(guildsData);
 						message.reply("Setup complete!");
 					})
-					.catch(Util.dateError)
+					.catch(DiscordUtil.dateError)
 					.then(() => setupHelpers.splice(idx - 1, 1))
 			}
 
@@ -77,7 +77,7 @@ const Activity = {
 
 				//if the member doesn't already have the active role, and they aren't in the list of ignored IDs, give it to them
 				if (activeRole && !member.roles.get(activeRole.id) && !guildData.ignoredUserIDs.includes(message.member.id))
-					member.addRole(activeRole).catch(Util.dateError);
+					member.addRole(activeRole).catch(DiscordUtil.dateError);
 			}
 		}
 	},
@@ -90,7 +90,7 @@ const Activity = {
 };
 
 function writeFile(guildsData) {
-	JsonFile.writeFile(SAVE_FILE, guildsData, err => { if (err) Util.dateError(err); });
+	JsonFile.writeFile(SAVE_FILE, guildsData, err => { if (err) DiscordUtil.dateError(err); });
 }
 
 function fromJSON(json) {

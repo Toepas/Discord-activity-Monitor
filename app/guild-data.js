@@ -1,5 +1,5 @@
 const DateDiff = require("date-diff");
-const Util = require("./util.js");
+const DiscordUtil = require("discordjs-util");
 
 module.exports = class GuildData {
 	/**
@@ -32,7 +32,7 @@ module.exports = class GuildData {
 				if (diff.days() > this.inactiveThresholdDays) {
 					const member = guild.members.get(userID);
 					if (member)
-						guild.members.get(userID).removeRole(this.activeRoleID).catch(Util.dateError);
+						guild.members.get(userID).removeRole(this.activeRoleID).catch(DiscordUtil.dateError);
 					
 					delete this.users[userID]; //un-save the user's last active time, as they don't matter anymore
 				}

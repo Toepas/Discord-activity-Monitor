@@ -1,4 +1,4 @@
-const Util = require("./util.js");
+const DiscordUtil = require("discordjs-util");
 const GuildData = require("./guild-data.js");
 
 const setupSteps = [
@@ -50,7 +50,7 @@ module.exports = class {
 				return () => {
 					if (i <= setupSteps.length - 1)
 						//ask in the channel and wait for the promised response before asking the next question
-						Util.ask(client, textChannel, member, setupSteps[i].message).then(response => {
+						DiscordUtil.ask(client, textChannel, member, setupSteps[i].message).then(response => {
 							setupSteps[i++].action(response, responseData);
 							askNext();
 						}).catch(reject);
