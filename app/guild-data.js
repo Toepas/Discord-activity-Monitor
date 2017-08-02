@@ -29,7 +29,7 @@ module.exports = class GuildData {
 				const activeDate = this.users[userID];
 				const diff = new DateDiff(now, Date.parse(activeDate));
 
-				if (diff.days() > this.inactiveThresholdDays) {
+				if (diff.days() >= this.inactiveThresholdDays) {
 					const member = guild.members.get(userID);
 					if (member)
 						guild.members.get(userID).removeRole(this.activeRoleID).catch(DiscordUtil.dateError);
