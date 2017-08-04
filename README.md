@@ -11,32 +11,26 @@ A discord bot to assign/remove a role from users in your guild based on whether 
 
 ## Inviting the bot
 
-Invite the bot to your server [here](https://discordapp.com/oauth2/authorize?client_id=337005754684932098&scope=bot&permissions=0)
+Invite the bot to your server using [this link](https://discordapp.com/oauth2/authorize?client_id=337005754684932098&scope=bot&permissions=0x10000c00)
 
 ## Configuring the bot
 
-### Permissions
+1. Create a role (or choose an existing) to use to mark active users
+2. Make your chosen role *mentionable* (only needed until setup is complete)
+3. Put the bot's role *higher* in teh list than your chosen role
+4. Run `!activitymonitor setup` in a channel the bot can *read* and *write* in
+5. Respond with the information the bot asks you for, until setup is complete
 
-Required for normal functionality:
-- Manage Roles
-- Read Messages (in the channels you wish the bot to "monitor")
+Example:  
+![example image](http://i.imgur.com/s60poam.png)
 
-Required for setup only:
-- Send messages
+## Permissions needed
 
-### Configuration
-
-Ensure:
-- The guild owner is the one running the setup
-- The "active" role is *mentionable* for the duration of the setup
-- The bot has *read* and *write* permissions to the channel being used for setup
-- The bot's role is higher in the list than the 'active' role
-
-Steps:
-- Run `!activitymonitor setup` in a channel the bot can *read* and *write* in
-- Respond with the information the bot asks you for, until setup is complete
-
-Example: ![example image](http://i.imgur.com/s60poam.png)
+| Permission     | Reason                                                                |
+|----------------|-----------------------------------------------------------------------|
+| Read messsages | Detect when people are active                                         |
+| Send messages  | Used to ask setup questions (can be disabled after setup is complete) |
+| Manage roles   | Assign and remove the active role from users                          |
 
 ## Need help?
 
