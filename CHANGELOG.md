@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.1.2
+
+### Added
+
+- "Playing" indicator with my website url
+
 ## v2.1.1
 
 ### Fixed
