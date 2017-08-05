@@ -1,8 +1,8 @@
 {
 	"saveIntervalSec": 30,
 	"commands": {
-		"setup": "!activitymonitor setup",
-		"purge": "!activitymonitor purge",
-		"registerExisting": "!activitymonitor register-existing"
+		"setup": "setup",
+		"viewSettings": "view-config",
+		"registerExisting": "register-existing"
 	}
 }
