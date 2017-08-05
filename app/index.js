@@ -26,31 +26,24 @@ module.exports = (client) => {
 	setInterval(() => Activity.checkUsersInAllGuilds(client, guildsData), 1 * 24 * 60 * 60 * 1000);
 
 	client.on("message", message => {
-		if (message.member.permissions.has("ADMINISTRATOR") && message.member.id !== client.user.id) {
+		if (message.content.startsWith(client.user.toString()) //user is @mention-ing the bot
+			&& message.member.permissions.has("ADMINISTRATOR") //user is admin
+			&& message.member.id !== client.user.id) //user is not the bot accidentally triggering itself
+		{
+			const params = message.content.split(" ");
+			const guildData = guildsData[message.guild.id] = guildsData[message.guild.id] || new GuildData(); //initialise this guildData within guildsData as {} if it's not already initialised
 
-			if (message.content === config.commands.setup && !setupHelpers.find(x => x.guild.id === message.channel.guild.id)) {
-				const helper = new GuildSetupHelper(message);
-				let idx = setupHelpers.push(helper);
-				const existingUsers = guildsData[message.channel.guild.id] ? guildsData[message.channel.guild.id].users : null;
-				helper.walkThroughSetup(client, message.channel, message.member, existingUsers)
-					.then(guildData => {
-						guildsData[message.channel.guild.id] = guildData;
-						writeFile(guildsData);
-						message.reply("Setup complete!");
-					})
-					.catch(DiscordUtil.dateError)
-					.then(() => setupHelpers.splice(idx - 1, 1))
-			}
-
-			else if (message.content === config.commands.purge) {
-				const guildData = guildsData[message.channel.guild.id];
-				if (guildData)
-					guildData.checkUsers(client);
-			}
-			else if (message.content === config.commands.registerExisting) {
-				const guildData = guildsData[message.channel.guild.id];
-				if (guildData)
-					Activity.registerExisting(message.channel.guild, guildData);
+			switch (params[1].toLowerCase()) {
+				case config.commands.setup:
+					setupFromMessage(client, message, guildData, () => writeFile(guildsData));
+					break;
+				case config.commands.purge:
+					if(guildData)
+						guildData.checkUsers(client);
+					break;
+				case config.commands.registerExisting:
+					if(guildData)
+						Activity.registerExisting(message.guild, guildData);
 			}
 		}
 
@@ -88,6 +81,23 @@ const Activity = {
 		});
 	}
 };
+
+function setupFromMessage(client, message, guildData, callback) {
+	//create the helper to setup the guild
+	const helper = new GuildSetupHelper(message);
+	let idx = setupHelpers.push(helper);
+
+	const existingUsers = guildData ? guildData.users : null; //extract any saved users if this guild has already run setup before
+
+	helper.walkThroughSetup(client, message.channel, message.member, existingUsers)
+		.then(responseData => {
+			Object.assign(guildData, responseData); //map all the response data into our guild data object
+			callback();
+			message.reply("Setup complete!");
+		})
+		.catch(DiscordUtil.dateError)
+		.then(() => setupHelpers.splice(idx - 1, 1)); //always remove this setup helper
+}
 
 function writeFile(guildsData) {
 	JsonFile.writeFile(SAVE_FILE, guildsData, err => { if (err) DiscordUtil.dateError(err); });
