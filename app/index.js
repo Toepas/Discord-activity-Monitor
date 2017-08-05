@@ -38,8 +38,12 @@ module.exports = (client) => {
 					setupFromMessage(client, message, guildData, () => writeFile(guildsData));
 					break;
 				case config.commands.registerExisting:
-					if(guildData)
+					if (guildData)
 						Activity.registerExisting(message.guild, guildData);
+					break;
+				case config.commands.viewSettings:
+					message.reply("```JavaScript\n" + guildData.toString() + "```");
+					break;
 			}
 		}
 

@@ -43,4 +43,9 @@ module.exports = class GuildData {
 	fromJSON(data) {
 		return Object.assign(this, data);
 	}
+
+	toString(){
+		const blacklist = ["id", "users"];
+		return JSON.stringify(this, (k, v) => !blacklist.includes(k) ? v : undefined, "\t");
+	}
 };
