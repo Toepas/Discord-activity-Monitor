@@ -32,8 +32,9 @@ module.exports = class GuildData {
 				if (diff.days() >= this.inactiveThresholdDays) {
 					const member = guild.members.get(userID);
 					if (member)
-						guild.members.get(userID).removeRole(this.activeRoleID).catch(DiscordUtil.dateError);
-					
+						guild.members.get(userID)
+							.removeRole(this.activeRoleID).catch(e => DiscordUtil.dateError("Error removing active role from user " + member.name + " in guild " + guild.name, e));
+
 					delete this.users[userID]; //un-save the user's last active time, as they don't matter anymore
 				}
 			});
@@ -44,7 +45,7 @@ module.exports = class GuildData {
 		return Object.assign(this, data);
 	}
 
-	toString(){
+	toString() {
 		const blacklist = ["id", "users"];
 		return JSON.stringify(this, (k, v) => !blacklist.includes(k) ? v : undefined, "\t");
 	}

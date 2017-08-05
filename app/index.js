@@ -70,7 +70,8 @@ const Activity = {
 
 				//if the member doesn't already have the active role, and they aren't in the list of ignored IDs, give it to them
 				if (activeRole && !member.roles.get(activeRole.id) && !guildData.ignoredUserIDs.includes(message.member.id))
-					member.addRole(activeRole).catch(DiscordUtil.dateError);
+					member.addRole(activeRole)
+						.catch(e => DiscordUtil.dateError("Error adding active role to user " + member.user.username + " in guild " + guild.name, e));
 			}
 		}
 	},
@@ -95,12 +96,12 @@ function setupFromMessage(client, message, guildData, callback) {
 			callback();
 			message.reply("Setup complete!");
 		})
-		.catch(DiscordUtil.dateError)
+		.catch(e => DiscordUtil.dateError("Error walking through guild setup for guild " + message.guild.name, e))
 		.then(() => setupHelpers.splice(idx - 1, 1)); //always remove this setup helper
 }
 
 function writeFile(guildsData) {
-	JsonFile.writeFile(SAVE_FILE, guildsData, err => { if (err) DiscordUtil.dateError(err); });
+	JsonFile.writeFile(SAVE_FILE, guildsData, err => { if (err) DiscordUtil.dateError("Error writing file", err); });
 }
 
 function fromJSON(json) {
