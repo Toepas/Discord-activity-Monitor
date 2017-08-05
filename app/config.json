@@ -2,7 +2,6 @@
 	"saveIntervalSec": 30,
 	"commands": {
 		"setup": "setup",
-		"purge": "purge",
 		"registerExisting": "register-existing"
 	}
 }
