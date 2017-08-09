@@ -44,11 +44,14 @@ const setupSteps = [
 		message: "Please @mention all the *members* you wish to be *exempt* from role removal (type 'none' if none)",
 		action: (message, responseData) => {
 			return new Promise((resolve, reject) => {
-				//expect the message to either be "none" or in the format '@<snowflake> @<snowflake> @<snowflake>'
 				responseData.ignoredUserIDs = [];
-				if (message.mentions.members.size > 0 || message.content.toLowerCase() === "none")
-					resolve(responseData.ignoredUserIDs = message.mentions.members.filter(x => x.id));
-				else
+				responseData.ignoredRoleIDs = [];
+				if (message.mentions.members.size > 0 || message.mentions.roles.size > 0) {
+					message.mentions.members.forEach(member => responseData.ignoredUserIDs.push(member.id));
+					message.mentions.roles.forEach(role => responseData.ignoredRoleIDs.push(role.id));
+					resolve();
+				}
+				else if (message.content.toLowerCase() !== "none")
 					reject("Please either @mention some members or type 'none'");
 			});
 		}
@@ -72,11 +75,18 @@ module.exports = class {
 						DiscordUtil.ask(client, textChannel, member, overrideMsg || setupSteps[i].message)
 							.then(response => {
 								setupSteps[i].action(response, responseData)
-									.then(() => {i++; askNext();})
+									.then(() => { i++; askNext(); })
 									.catch(e => askNext(e));
 							}).catch(reject);
 					else
-						resolve(new GuildData(this.guild.id, responseData.inactiveThresholdDays, responseData.activeRoleID, existingUsers || {}, responseData.allowRoleAddition, responseData.ignoredUserIDs));
+						resolve(new GuildData(
+							this.guild.id,
+							responseData.inactiveThresholdDays,
+							responseData.activeRoleID,
+							existingUsers || {},
+							responseData.allowRoleAddition,
+							responseData.ignoredUserIDs,
+							responseData.ignoredRoleIDs));
 				};
 			})();
 			askNext();

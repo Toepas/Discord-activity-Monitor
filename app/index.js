@@ -28,7 +28,7 @@ module.exports = (client) => {
 	client.on("message", message => {
 		if (message.channel.type !== "text" || !message.member)
 			return;
-		
+
 		if (message.content.startsWith(client.user.toString()) //user is @mention-ing the bot
 			&& message.member.permissions.has("ADMINISTRATOR") //user is admin
 			&& message.member.id !== client.user.id) //user is not the bot accidentally triggering itself
@@ -65,8 +65,10 @@ const Activity = {
 			if (guildData.allowRoleAddition && guildData.activeRoleID && guildData.activeRoleID.length > 0) { //check if we're allowed to assign roles as well as remove them in this guild
 				let activeRole = guild.roles.get(guildData.activeRoleID);
 
-				//if the member doesn't already have the active role, and they aren't in the list of ignored IDs, give it to them
-				if (activeRole && !member.roles.get(activeRole.id) && !guildData.ignoredUserIDs.includes(message.member.id))
+				if (activeRole
+					&& !member.roles.get(activeRole.id) //member doesn't already have active role
+					&& !guildData.ignoredUserIDs.includes(member.id) //member isn't in the list of ignored member ids
+					&& !member.roles.some(role => guildData.ignoredRoleIDs.includes(role.id))) //member doesn't have one of the ignored role ids
 					member.addRole(activeRole)
 						.catch(e => DiscordUtil.dateError("Error adding active role to user " + member.user.username + " in guild " + guild.name, e));
 			}

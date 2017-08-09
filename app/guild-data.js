@@ -11,13 +11,14 @@ module.exports = class GuildData {
 	 * @param {bool} [allowRoleAddition = false] Should the bot be allowed to *add* as well as remove the role?
 	 * @param {string[]} [ignoredUserIDs = new Array()] IDs to ignore when checking if users are active
 	 */
-	constructor(id, inactiveThresholdDays, activeRoleID, users, allowRoleAddition, ignoredUserIDs) {
+	constructor(id, inactiveThresholdDays, activeRoleID, users, allowRoleAddition, ignoredUserIDs, ignoredRoleIDs) {
 		this.id = id;
 		this.inactiveThresholdDays = inactiveThresholdDays;
 		this.activeRoleID = activeRoleID;
 		this.users = users instanceof Object ? users : {};
 		this.allowRoleAddition = allowRoleAddition ? true : false;
 		this.ignoredUserIDs = Array.isArray(ignoredUserIDs) ? ignoredUserIDs : [];
+		this.ignoredRoleIDs = Array.isArray(ignoredRoleIDs) ? ignoredRoleIDs : [];
 	}
 
 	checkUsers(client) {
