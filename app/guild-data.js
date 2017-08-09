@@ -26,12 +26,12 @@ module.exports = class GuildData {
 			return;
 
 		const now = new Date();
-		const role = this.guild.roles.first(x => x.id === this.activeRoleID);
+		const role = guild.roles.first(x => x.id === this.activeRoleID);
 		if (!role)
 			return;
 
 		role.members.forEach(member => {
-			if (!this.users.includes(member.id)) //if the member has the role but isn't tracked, track them from now
+			if (!this.users[member.id]) //if the member has the role but isn't tracked, track them from now
 				this.users[member.id] = new Date();
 			else if (new DateDiff(now, Date.parse(this.users[member.id])).days() >= this.inactiveThresholdDays) { //else if their last active date was more days ago than the threshold remove their role
 				member.removeRole(this.activeRoleID).catch(e => DiscordUtil.dateError("Error removing active role from user " + member.name + " in guild " + guild.name, e));
