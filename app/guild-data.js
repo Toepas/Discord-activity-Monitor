@@ -22,23 +22,23 @@ module.exports = class GuildData {
 
 	checkUsers(client) {
 		const guild = client.guilds.get(this.id);
-		if (guild) {
-			const now = new Date();
+		if (!guild)
+			return;
 
-			Object.keys(this.users).forEach(userID => {
-				const activeDate = this.users[userID];
-				const diff = new DateDiff(now, Date.parse(activeDate));
+		const now = new Date();
+		const role = this.guild.roles.first(x => x.id === this.activeRoleID);
+		if (!role)
+			return;
 
-				if (diff.days() >= this.inactiveThresholdDays) {
-					const member = guild.members.get(userID);
-					if (member)
-						guild.members.get(userID)
-							.removeRole(this.activeRoleID).catch(e => DiscordUtil.dateError("Error removing active role from user " + member.name + " in guild " + guild.name, e));
+		role.members.forEach(member => {
+			if (!this.users.includes(member.id)) //if the member has the role but isn't tracked, track them from now
+				this.users[member.id] = new Date();
+			else if (new DateDiff(now, Date.parse(this.users[member.id])).days() >= this.inactiveThresholdDays) { //else if their last active date was more days ago than the threshold remove their role
+				member.removeRole(this.activeRoleID).catch(e => DiscordUtil.dateError("Error removing active role from user " + member.name + " in guild " + guild.name, e));
 
-					delete this.users[userID]; //un-save the user's last active time, as they don't matter anymore
-				}
-			});
-		}
+				delete this.users[member.id]; //delete the user's last active time, as they have lost their role and thus don't matter anymore
+			}
+		});
 	}
 
 	fromJSON(data) {
