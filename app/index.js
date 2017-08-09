@@ -26,6 +26,9 @@ module.exports = (client) => {
 	setInterval(() => Activity.checkUsersInAllGuilds(client, guildsData), 1 * 24 * 60 * 60 * 1000);
 
 	client.on("message", message => {
+		if (message.channel.type !== "text" || !message.member)
+			return;
+		
 		if (message.member.permissions.has("ADMINISTRATOR") && message.member.id !== client.user.id) {
 
 			if (message.content === config.commands.setup && !setupHelpers.find(x => x.guild.id === message.channel.guild.id)) {
@@ -39,7 +42,7 @@ module.exports = (client) => {
 						message.reply("Setup complete!");
 					})
 					.catch(Util.dateError)
-					.then(() => setupHelpers.splice(idx - 1, 1))
+					.then(() => setupHelpers.splice(idx - 1, 1));
 			}
 
 			else if (message.content === config.commands.purge) {
@@ -54,7 +57,7 @@ module.exports = (client) => {
 			}
 		}
 
-		Activity.registerActivity(message.guild, message, guildsData[message.channel.guild.id]);
+		Activity.registerActivity(message.guild, message.member, guildsData[message.channel.guild.id]);
 	});
 };
 
@@ -66,17 +69,15 @@ const Activity = {
 			writeFile(guildsData);
 		}
 	}),
-	registerActivity: (guild, message, guildData) => {
+	registerActivity: (guild, member, guildData) => {
 		if (guildData) {
-			let member = message.member;
-
 			guildData.users[member.id] = new Date(); //store now as the latest date this user has interacted
 
 			if (guildData.allowRoleAddition && guildData.activeRoleID && guildData.activeRoleID.length > 0) { //check if we're allowed to assign roles as well as remove them in this guild
 				let activeRole = guild.roles.get(guildData.activeRoleID);
 
 				//if the member doesn't already have the active role, and they aren't in the list of ignored IDs, give it to them
-				if (activeRole && !member.roles.get(activeRole.id) && !guildData.ignoredUserIDs.includes(message.member.id))
+				if (activeRole && !member.roles.get(activeRole.id) && !guildData.ignoredUserIDs.includes(member.id))
 					member.addRole(activeRole).catch(Util.dateError);
 			}
 		}
