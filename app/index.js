@@ -26,6 +26,9 @@ module.exports = (client) => {
 	setInterval(() => Activity.checkUsersInAllGuilds(client, guildsData), 1 * 24 * 60 * 60 * 1000);
 
 	client.on("message", message => {
+		if (message.channel.type !== "text" || !message.member)
+			return;
+		
 		if (message.content.startsWith(client.user.toString()) //user is @mention-ing the bot
 			&& message.member.permissions.has("ADMINISTRATOR") //user is admin
 			&& message.member.id !== client.user.id) //user is not the bot accidentally triggering itself
@@ -43,7 +46,7 @@ module.exports = (client) => {
 			}
 		}
 
-		Activity.registerActivity(message.guild, message, guildsData[message.channel.guild.id]);
+		Activity.registerActivity(message.guild, message.member, guildsData[message.channel.guild.id]);
 	});
 };
 
@@ -55,10 +58,8 @@ const Activity = {
 			writeFile(guildsData);
 		}
 	}),
-	registerActivity: (guild, message, guildData) => {
+	registerActivity: (guild, member, guildData) => {
 		if (guildData) {
-			let member = message.member;
-
 			guildData.users[member.id] = new Date(); //store now as the latest date this user has interacted
 
 			if (guildData.allowRoleAddition && guildData.activeRoleID && guildData.activeRoleID.length > 0) { //check if we're allowed to assign roles as well as remove them in this guild
