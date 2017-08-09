@@ -29,11 +29,14 @@ module.exports = (client) => {
 		if (message.channel.type !== "text" || !message.member)
 			return;
 
-		if (message.content.startsWith(client.user.toString()) //user is @mention-ing the bot
+		if (message.content.startsWith(message.guild.me.toString()) //user is @mention-ing the bot
 			&& message.member.permissions.has("ADMINISTRATOR") //user is admin
 			&& message.member.id !== client.user.id) //user is not the bot accidentally triggering itself
 		{
 			const params = message.content.split(" ");
+			if (params.length < 2)
+				return;
+
 			const guildData = guildsData[message.guild.id] = guildsData[message.guild.id] || new GuildData(); //initialise this guildData within guildsData as {} if it's not already initialised
 
 			switch (params[1].toLowerCase()) {
@@ -69,16 +72,12 @@ const Activity = {
 					&& !member.roles.get(activeRole.id) //member doesn't already have active role
 					&& !guildData.ignoredUserIDs.includes(member.id) //member isn't in the list of ignored member ids
 					&& !member.roles.some(role => guildData.ignoredRoleIDs.includes(role.id))) //member doesn't have one of the ignored role ids
+				{
 					member.addRole(activeRole)
 						.catch(e => DiscordUtil.dateError("Error adding active role to user " + member.user.username + " in guild " + guild.name, e));
+				}
 			}
 		}
-	},
-	registerExisting: (guild, guildData) => {
-		guild.roles.get(guildData.activeRoleID).members.forEach(member => {
-			if (!guildData.ignoredUserIDs.includes(member.id))
-				guildData.users[member.id] = new Date();
-		});
 	}
 };
 

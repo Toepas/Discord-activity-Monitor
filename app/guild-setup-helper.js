@@ -41,7 +41,7 @@ const setupSteps = [
 		}
 	},
 	{
-		message: "Please @mention all the *members* you wish to be *exempt* from role removal (type 'none' if none)",
+		message: "Please @mention any *members* or *roles* who are to be exempt from being marked/unmarked as active",
 		action: (message, responseData) => {
 			return new Promise((resolve, reject) => {
 				responseData.ignoredUserIDs = [];

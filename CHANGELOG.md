@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.2.0
+
+### Added
+- Automatic tracking of people who have the role, even if it wasn't the bot who assigned it to them
+- Ability to make entire roles exempt from being marked/unmarked as active
+- `@Activity_Monitor view-config` command to view guild settings
+
+### Updated
+- Setup
+	- Now started with `@Activity_Montitor setup`
+	- Now warns you if you respond with invalid answers
+
 ## v2.1.3
 
 ### Fixed
