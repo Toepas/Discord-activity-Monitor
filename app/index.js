@@ -14,8 +14,8 @@ const SAVE_FILE = "./guilds.json";
 const setupHelpers = [];
 
 //when loaded with require() by an external script, this acts as a kind of "on ready" function
-module.exports = (client) => {
-	const config = require("./config.json");
+module.exports = (client, config) => {
+	config = config || require("./config.json");
 
 	//load data from file and set up periodic saving back to file
 	const guildsData = FileSystem.existsSync(SAVE_FILE) ? fromJSON(JsonFile.readFileSync(SAVE_FILE)) : {};
