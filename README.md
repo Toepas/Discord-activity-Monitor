@@ -1,13 +1,17 @@
 # Discord activity monitor
 
+<!--summary-->
 A discord bot to assign/remove a role from users in your guild based on whether or not they have been active lately.
+<!--/summary-->
 
 ## Features
 
+<!--features-->
 - Removes a role from a user who has not been active for a number of days
 - Add the role to a user when they become active again (optional)
 - Ignores specified users, eg if you don't want bots to be marked 'active'
 - Configurable number of days before users are marked inactive
+<!--/features-->
 
 ## Inviting the bot
 
