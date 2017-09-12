@@ -1,69 +1,113 @@
-# Discord activity monitor
+# Changelog
 
-<!--summary-->
-A discord bot to assign/remove a role from users in your guild based on whether or not they have been active lately.
-<!--/summary-->
+## v3.0.0-b1
 
-## Features
+### Added
 
-<!--features-->
-- Removes a role from a user who has not been active for a number of days
-- Add the role to a user when they become active again (optional)
-- Ignores specified users, eg if you don't want bots to be marked 'active'
-- Configurable number of days before users are marked inactive
-<!--/features-->
+- Fancy new @bot help command
 
-## Invite
+### Updated
 
-By inviting this bot to your server you agree to the [terms and conditions](#privacy-statement) laid out in the privacy section of this document.  
-If you agree, invite to your server with [this link](https://discordapp.com/oauth2/authorize?client_id=337005754684932098&scope=bot&permissions=0x10000c00).
+- Significant back-end command handling updates
 
-## Setup
+## v2.2.1
 
-1. Create a role (or choose an existing) to use to mark active users
-2. Make your chosen role *mentionable* (only needed until setup is complete)
-3. Put the bot's role *higher* in teh list than your chosen role
-4. Run `@Activity_Monitor setup` in a channel the bot can *read* and *write* in
-	- If you've nicknamed the bot, substitute `@Activity_Monitor` for it's nickname
-5. Respond with the information the bot asks you for, until setup is complete
+### Added
 
-- You can view your guild settings with `@Activity_Monitor view-config`
+- Added ability to pass in configuration object on startup
 
-Example:  
-![example image](http://i.imgur.com/3W8jN4I.png)
+## v2.2.0
 
-## Permissions
+### Added
+- Automatic tracking of people who have the role, even if it wasn't the bot who assigned it to them
+- Ability to make entire roles exempt from being marked/unmarked as active
+- `@Activity_Monitor view-config` command to view guild settings
 
-The bot requires certain permissions, which you are prompted for on the invite screen.
-Each permission has a reason for being required, explained below.
+### Updated
+- Setup
+	- Now started with `@Activity_Montitor setup`
+	- Now warns you if you respond with invalid answers
 
-| Permission     | Reason                                                                |
-|----------------|-----------------------------------------------------------------------|
-| Read messsages | Detect when people are active                                         |
-| Send messages  | Used to ask setup questions (can be disabled after setup is complete) |
-| Manage roles   | Assign and remove the active role from users                          |
+## v2.1.3
 
-## Privacy statement
+### Fixed
+- Fix seemingly random crashes during message detection
 
-In accordance with the [Discord developer Terms of Service](https://discordapp.com/developers/docs/legal), by inviting this bot to your Discord server you agree that this bot may collect and store the relevant data needed to function, including but not limited to:
+## v2.1.2
 
-- Details about the server being joined (server name, server ID, server roles and permissions)  
-- Details about the users in the server (usernames, nicknames and user IDs)  
-- The contents of messages necessary to function (invoked commands and their parameters)  
+### Added
 
-This bot will only collect data which is necessary to function.  
-No data collected will be shared with any third parties.  
+- "Playing" indicator with my website url
 
-Should you wish for the data stored about your server to be removed, please contact me via [my support Discord server](https://discordapp.com/invite/SSkbwSJ) and I will oblige as soon as I am able. Please note that this will require you to remove the bot from your server.
+## v2.1.1
 
-## Want to host your own instance?
+### Fixed
 
-1. Clone the repository, or download and extract the zip file (preferrably from the release page)
-2. Make sure you have *npm* and *git* installed
-3. Run `npm install`
-4. Add *token.json* in the root folder: `{ "token": "your-token-goes-here" }`
-5. Run `npm start`
+- Fixed issue where data being present for a user who had left the respective guild caused an exception, stopping other users from being processed
 
-## Need help?
+## v2.1.0
 
-I am available for contact via my [support Discord server](https://discordapp.com/invite/SSkbwSJ). I will always do my best to respond, however I am often busy so can't always be available right away, and as this is a free service I may not always be able to resolve your query.
+### Updated
+
+- Refactored a bunch of code for stability improvements
+
+### Fixed
+
+- Fixed some issues with setup not running properly
+
+## v2.0.1
+
+### Fixed
+
+- Bot able to get stuck in setup mode forever
+- Bot replying to itself if it has admin permissions
+- Incorrect reply formats during setup causing various problems
+
+## v2.0.1
+
+### Updated
+
+- Any administrator can now perform the setup
+
+### Fixed
+
+- Fixed issue where guild could enter setup multiple times
+- Fixed a couple of errors that caused the bot to crash when it should have just logged them
+
+## v2.0.0
+
+### Updated
+
+- Updated core library to use discord.js rather than discord.io (discord.js handles rate limiting automatically)
+- Updated bot to support multiple guilds, rather than requiring a new instance for each one
+
+## Added
+
+- Guild setup helper via in-chat commands
+
+### Fixed
+
+- Fixed rate limit issues when assigning/removing roles from users (by switching to discord.js)
+- Prevent attempt to re-assign existing roles to users
+- Add date + time to logged errors
+
+## v1.2.0
+
+### Added
+
+- Add config option to ignore certain IDs
+
+## v1.1.0
+
+### Added
+
+- Command to register all existing users with the "active" role assigned to them with last active time as "now"
+	- Useful when setting up the bot for the first time, and the role is already in use
+
+## v1.0.0
+
+### Features
+
+- Assigns users a role to mark them as active when they send a message or join a voice channel
+- Checks at a configurable interval to see if any users have been inactive for longer than a configurable threshold
+- Users have the "active" role removed after a configurable period of inactivity
