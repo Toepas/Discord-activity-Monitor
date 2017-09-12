@@ -1,8 +1,0 @@
-{
-	"saveIntervalSec": 30,
-	"commands": {
-		"setup": "setup",
-		"viewSettings": "view-config",
-		"registerExisting": "register-existing"
-	}
-}
