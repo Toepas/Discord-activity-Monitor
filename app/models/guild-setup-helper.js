@@ -41,7 +41,7 @@ const setupSteps = [
 		}
 	},
 	{
-		message: "Please @mention any *members* or *roles* who are to be exempt from being marked/unmarked as active",
+		message: "Please @mention any *members* or *roles* who are to be exempt from being marked/unmarked as active (or type 'none')",
 		action: (message, responseData) => {
 			return new Promise((resolve, reject) => {
 				responseData.ignoredUserIDs = [];
@@ -53,6 +53,8 @@ const setupSteps = [
 				}
 				else if (message.content.toLowerCase() !== "none")
 					reject("Please either @mention some members or type 'none'");
+				else
+					resolve();
 			});
 		}
 	}
@@ -80,13 +82,15 @@ module.exports = class {
 							}).catch(reject);
 					else
 						resolve(new GuildData(
-							this.guild.id,
-							responseData.inactiveThresholdDays,
-							responseData.activeRoleID,
-							existingUsers || {},
-							responseData.allowRoleAddition,
-							responseData.ignoredUserIDs,
-							responseData.ignoredRoleIDs));
+							{
+								id: this.guild.id,
+								inactiveThresholdDays: responseData.inactiveThresholdDays,
+								activeRoleID: responseData.activeRoleID,
+								users: existingUsers || {},
+								allowRoleAddition: responseData.allowRoleAddition,
+								ignoredUserIDs: responseData.ignoredUserIDs,
+								ignoredRoleIDs: responseData.ignoredRoleIDs
+							}));
 				};
 			})();
 			askNext();

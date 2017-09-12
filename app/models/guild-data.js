@@ -2,7 +2,7 @@ const DateDiff = require("date-diff");
 const DiscordUtil = require("discordjs-util");
 
 module.exports = class GuildData {
-	constructor(id, inactiveThresholdDays, activeRoleID, users, allowRoleAddition, ignoredUserIDs, ignoredRoleIDs) {
+	constructor({ id, inactiveThresholdDays, activeRoleID, users, allowRoleAddition, ignoredUserIDs, ignoredRoleIDs }) {
 		this.id = id;
 		this.inactiveThresholdDays = inactiveThresholdDays;
 		this.activeRoleID = activeRoleID;
@@ -18,7 +18,7 @@ module.exports = class GuildData {
 			return;
 
 		const now = new Date();
-		const role = guild.roles.first(x => x.id === this.activeRoleID);
+		const role = guild.roles.find(x => x.id === this.activeRoleID);
 		if (!role)
 			return;
 
