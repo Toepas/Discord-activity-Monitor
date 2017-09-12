@@ -8,13 +8,13 @@ module.exports = {
 		Activity.checkUsersInAllGuilds(client, guildsData);
 		setInterval(() => Activity.checkUsersInAllGuilds(client, guildsData), 1 * 24 * 60 * 60 * 1000);
 
-		return new Promise.resolve();
+		return Promise.resolve();
 	},
-	onCommand(commandObj, commandsObj, params, guildData, message) {
-		switch (commandObj.command) {
-			case commandsObj.setup.command:
+	onCommand({ command, config, params, guildData, botName, message, client }) {
+		switch (command) {
+			case config.commands.setup:
 				return setupFromMessage(client, message, guildData); //return promise!
-			case commandsObj.viewSettings.command:
+			case config.commands.viewSettings:
 				return new Promise.resolve(`\`\`\`JavaScript\n ${guildData.toString()} \`\`\``);
 		}
 	},
@@ -51,17 +51,19 @@ const Activity = {
 };
 
 function setupFromMessage(client, message, guildData) {
-	//create the helper to setup the guild
-	const helper = new GuildSetupHelper(message);
-	let idx = setupHelpers.push(helper);
+	return new Promise((resolve, reject) => {
+		//create the helper to setup the guild
+		const helper = new GuildSetupHelper(message);
+		let idx = setupHelpers.push(helper);
 
-	const existingUsers = guildData ? guildData.users : null; //extract any saved users if this guild has already run setup before
+		const existingUsers = guildData ? guildData.users : null; //extract any saved users if this guild has already run setup before
 
-	helper.walkThroughSetup(client, message.channel, message.member, existingUsers)
-		.then(responseData => {
-			Object.assign(guildData, responseData); //map all the response data into our guild data object
-			message.reply("Setup complete!");
-		})
-		.catch(e => DiscordUtil.dateError("Error walking through guild setup for guild " + message.guild.name, e))
-		.then(() => setupHelpers.splice(idx - 1, 1)); //always remove this setup helper
+		helper.walkThroughSetup(client, message.channel, message.member, existingUsers)
+			.then(responseData => {
+				Object.assign(guildData, responseData); //map all the response data into our guild data object
+				resolve("Setup complete!");
+			})
+			.catch(e => reject("Error walking through guild setup for guild " + message.guild.name, e))
+			.then(() => setupHelpers.splice(idx - 1, 1)); //always remove this setup helper
+	});
 }

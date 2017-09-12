@@ -15,23 +15,18 @@ const PackageJSON = require("../package.json"); //used to provide some info abou
 const Bot = require("./bot.js");
 
 //global vars
-let writeFile = null;
+let writeFile = null; //method will be re-assigned in .exports method
 
 //use module.exports as a psuedo "onready" function
 module.exports = (client, config = null) => {
-	config = config || require("./config.json"); //load config file
-	const guildsData = FileSystem.existsSync(config.generic.saveFile) ? fromJSON(JsonFile.readFileSync(config.generic.saveFile)) : {}; //read data from file, or generate new one if file doesn't exist
+	config = config || require("./config.json");
+	const guildsData = FileSystem.existsSync(config.generic.saveFile) ? fromJSON(JsonFile.readFileSync(config.generic.saveFile)) : {};
 
-	//create our writeFile function that will allow other functions to save data to json without needing access to the full guildsData or config objects
-	//then set an interval to automatically save data to file
 	writeFile = () => JsonFile.writeFile(config.generic.saveFile, guildsData, err => { if (err) DiscordUtil.dateError("Error writing file", err); });
 	setInterval(() => writeFile(), config.generic.saveIntervalSec * 1000);
 
-	//handle messages
 	client.on("message", message => {
-		if (message.author.id !== client.user.id) { //check the bot isn't triggering itself
-
-			//check whether we need to use DM or text channel handling
+		if (message.author.id !== client.user.id) {
 			if (message.channel.type === "dm")
 				HandleMessage.dm(client, config, message);
 			else if (message.channel.type === "text" && message.member)
@@ -39,7 +34,7 @@ module.exports = (client, config = null) => {
 		}
 	});
 
-	Bot.onReady(client, guildsData, config).then(() => writeFile).catch(err => DiscordUtil.dateError(err));
+	Bot.onReady(client, guildsData, config).then(() => writeFile()).catch(err => DiscordUtil.dateError(err));
 };
 
 const HandleMessage = {
@@ -56,34 +51,21 @@ const HandleMessage = {
 		if (isCommand) {
 			const userIsAdmin = message.member.permissions.has("ADMINISTRATOR");
 			const botName = "@" + (message.guild.me.nickname || client.user.username);
+			const { command, params, expectedParamCount } = getCommandDetails(message, config, userIsAdmin);
 
-			const split = message.content.toLowerCase().split(/\ +/); //split the message at whitespace
-			const command = split[1]; //extract the command used
-			const commandObj = config.commands[Object.keys(config.commands).find(x => config.commands[x].command.toLowerCase() === command)]; //find the matching command object
-
-			if (!commandObj || (commandObj.admin && !userIsAdmin))
+			if (!command || !params || isNaN(expectedParamCount))
 				return;
 
-			const params = split.slice(2, split.length); //extract the parameters passed for the command
-			const expectedParamCount = commandObj.syntax.split(/\ +/).length - 1; //calculate the number of expected command params
-
-			let finalisedParams;
-			if (params.length > expectedParamCount) //if we have more params than needed
-				finalisedParams = params.slice(0, expectedParamCount - 1).concat([params.slice(expectedParamCount - 1, params.length).join(" ")]);
-			else //else we either have exactly the right amount, or not enough
-				finalisedParams = params;
-
-			//find which command was used and handle it
 			switch (command) {
-				case config.commands.version.command:
+				case config.commands.version:
 					message.reply(`${PackageJSON.name} v${PackageJSON.version}`);
 					break;
-				case config.commands.help.command:
+				case config.commands.help:
 					message.channel.send(createHelpEmbed(botName, config, userIsAdmin));
 					break;
 				default:
-					if (finalisedParams.length >= expectedParamCount)
-						Bot.onCommand(commandObj, config.commands, finalisedParams, guildData, message, config, client, botName)
+					if (params.length >= expectedParamCount)
+						Bot.onCommand({ command, config, params: params, guildData, botName, message, client })
 							.then(msg => {
 								message.reply(msg);
 								writeFile();
@@ -93,7 +75,7 @@ const HandleMessage = {
 								DiscordUtil.dateError(err);
 							});
 					else
-						message.reply(`Incorrect syntax!\n**Expected:** *${botName} ${commandObj.syntax}*\n**Need help?** *${botName} ${config.commands.help.command}*`);
+						message.reply(`Incorrect syntax!\n**Expected:** *${botName} ${command.syntax}*\n**Need help?** *${botName} ${config.commands.help.command}*`);
 					break;
 			}
 		}
@@ -101,6 +83,26 @@ const HandleMessage = {
 			Bot.onNonCommandMsg(message, guildData);
 	}
 };
+
+function getCommandDetails(message, config, userIsAdmin) {
+	const splitMessage = message.content.toLowerCase().split(/ +/);
+	const commandStr = splitMessage[1];
+	const command = config.commands[Object.keys(config.commands).find(x => config.commands[x].command.toLowerCase() === commandStr)];
+
+	if (!command || (command.admin && !userIsAdmin))
+		return { command: null, params: null, expectedParamCount: null };
+
+	const params = splitMessage.slice(2, splitMessage.length);
+	const expectedParamCount = command.syntax.split(/ +/).length - 1;
+
+	let finalisedParams;
+	if (params.length > expectedParamCount)
+		finalisedParams = params.slice(0, expectedParamCount - 1).concat([params.slice(expectedParamCount - 1, params.length).join(" ")]);
+	else
+		finalisedParams = params;
+
+	return { command, params: finalisedParams, expectedParamCount };
+}
 
 function fromJSON(json) {
 	const guildsData = Object.keys(json);
