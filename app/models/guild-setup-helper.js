@@ -1,4 +1,4 @@
-const DiscordUtil = require("discordjs-util");
+const DiscordUtil = require("../../discord-bot-core").util;
 const GuildData = require("./guild-data.js");
 
 const setupSteps = [

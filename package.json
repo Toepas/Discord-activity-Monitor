@@ -10,7 +10,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "node wrapper.js",
+	  "postinstall": "cd ./discord-bot-core && npm install",
+    "start": "node app/index.js token.json guilds.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
