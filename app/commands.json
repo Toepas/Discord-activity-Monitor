@@ -1,0 +1,14 @@
+{
+	"setup": {
+		"command": "setup",
+		"description": "Setup activity monitor with this server",
+		"syntax": "setup",
+		"admin": true
+	},
+	"viewSettings": {
+		"command": "view-config",
+		"description": "View configured settings for this guild",
+		"syntax": "view-config",
+		"admin": true
+	}
+}

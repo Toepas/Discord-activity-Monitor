@@ -1,125 +1,84 @@
-//node imports
-const FileSystem = require("fs"); //manage files
-const Util = require("util"); //various node utilities
+const Core = require("../discord-bot-core");
+const DiscordUtil = Core.util;
+const GuildSetupHelper = require("./models/guild-setup-helper.js");
+const GuildData = require("./models/guild-data.js");
 
-//external lib imports
-const Discord = require("discord.js");
-const JsonFile = require("jsonfile"); //save/load data to/from json
+const setupHelpers = [];
 
-//my imports
-const DiscordUtil = require("discordjs-util"); //some discordjs helper functions of mine
+//IMPLEMENTATIONS//
+function onReady(coreClient) {
+	checkUsersInAllGuilds(coreClient.actual, coreClient.guildsData);
+	setInterval(() => checkUsersInAllGuilds(coreClient.actual, coreClient.guildsData), 1 * 24 * 60 * 60 * 1000);
 
-//app components
-const GuildData = require("./models/guild-data.js"); //data structure for guilds
-const PackageJSON = require("../package.json"); //used to provide some info about the bot
-const Bot = require("./bot.js");
+	return Promise.resolve();
+}
 
-//global vars
-let writeFile = null; //method will be re-assigned in .exports method
+function onTextMessage(message, guildData) {
+	registerActivity(message.guild, message.member, guildData);
+	return Promise.resolve();
+}
 
-//use module.exports as a psuedo "onready" function
-module.exports = (client, config = null) => {
-	config = config || require("./config.json");
-	const guildsData = FileSystem.existsSync(config.generic.saveFile) ? fromJSON(JsonFile.readFileSync(config.generic.saveFile)) : {};
+function setup({ command, params, guildData, botName, message, coreClient }) {
+	return new Promise((resolve, reject) => {
+		const helper = new GuildSetupHelper(message);
+		let idx = setupHelpers.push(helper) - 1;
 
-	writeFile = () => JsonFile.writeFile(config.generic.saveFile, guildsData, err => { if (err) DiscordUtil.dateError("Error writing file", err); });
-	setInterval(() => writeFile(), config.generic.saveIntervalSec * 1000);
+		const existingUsers = guildData ? guildData.users : null;
 
-	client.on("message", message => {
-		if (message.author.id !== client.user.id) {
-			if (message.channel.type === "dm")
-				HandleMessage.dm(client, config, message);
-			else if (message.channel.type === "text" && message.member)
-				HandleMessage.text(client, config, message, guildsData);
+		helper.walkThroughSetup(coreClient.actual, message.channel, message.member, existingUsers)
+			.then(responseData => {
+				Object.assign(guildData, responseData);
+				resolve("Setup complete!");
+			})
+			.catch(e => reject("Error walking through guild setup for guild " + message.guild.name + ".\n" + (e.message || e)))
+			.then(() => setupHelpers.splice(idx - 1, 1));
+	});
+}
+
+function viewSettings({ command, params, guildData, botName, message, coreClient }) {
+	return Promise.resolve(`\`\`\`JavaScript\n ${guildData.toString()} \`\`\``);
+}
+
+
+//INTERNAL FUNCTIONS//
+function checkUsersInAllGuilds(client, guildsData) {
+	client.guilds.forEach(guild => {
+		const guildData = guildsData[guild.id];
+		if (guildData) {
+			guildData.checkUsers(client);
 		}
 	});
+}
 
-	Bot.onReady(client, guildsData, config).then(() => writeFile()).catch(err => DiscordUtil.dateError(err));
-};
+function registerActivity(guild, member, guildData) {
+	if (guildData) {
+		guildData.users[member.id] = new Date(); //store now as the latest date this user has interacted
 
-const HandleMessage = {
-	dm: (client, config, message) => {
-		message.reply(Util.format(config.generic.defaultDMResponse, config.generic.website, config.generic.discordInvite));
-	},
-	text: (client, config, message, guildsData) => {
-		const isCommand = message.content.startsWith(message.guild.me.toString());
-		let guildData = guildsData[message.guild.id];
+		if (guildData.allowRoleAddition && guildData.activeRoleID && guildData.activeRoleID.length > 0) { //check if we're allowed to assign roles as well as remove them in this guild
+			let activeRole = guild.roles.get(guildData.activeRoleID);
 
-		if (!guildData)
-			guildData = guildsData[message.guild.id] = new GuildData({ id: message.guild.id });
-
-		if (isCommand) {
-			const userIsAdmin = message.member.permissions.has("ADMINISTRATOR");
-			const botName = "@" + (message.guild.me.nickname || client.user.username);
-			const { command, params, expectedParamCount } = getCommandDetails(message, config, userIsAdmin);
-
-			if (!command || !params || isNaN(expectedParamCount))
-				return;
-
-			switch (command) {
-				case config.commands.version:
-					message.reply(`${PackageJSON.name} v${PackageJSON.version}`);
-					break;
-				case config.commands.help:
-					message.channel.send(createHelpEmbed(botName, config, userIsAdmin));
-					break;
-				default:
-					if (params.length >= expectedParamCount)
-						Bot.onCommand({ command, config, params: params, guildData, botName, message, client })
-							.then(msg => {
-								message.reply(msg);
-								writeFile();
-							})
-							.catch(err => {
-								message.reply(err);
-								DiscordUtil.dateError(err);
-							});
-					else
-						message.reply(`Incorrect syntax!\n**Expected:** *${botName} ${command.syntax}*\n**Need help?** *${botName} ${config.commands.help.command}*`);
-					break;
+			if (activeRole
+				&& !member.roles.get(activeRole.id) //member doesn't already have active role
+				&& !guildData.ignoredUserIDs.includes(member.id) //member isn't in the list of ignored member ids
+				&& !member.roles.some(role => guildData.ignoredRoleIDs.includes(role.id))) //member doesn't have one of the ignored role ids
+			{
+				member.addRole(activeRole)
+					.catch(e => DiscordUtil.dateError("Error adding active role to user " + member.user.username + " in guild " + guild.name, e));
 			}
 		}
-		else
-			Bot.onNonCommandMsg(message, guildData);
 	}
-};
-
-function getCommandDetails(message, config, userIsAdmin) {
-	const splitMessage = message.content.toLowerCase().split(/ +/);
-	const commandStr = splitMessage[1];
-	const command = config.commands[Object.keys(config.commands).find(x => config.commands[x].command.toLowerCase() === commandStr)];
-
-	if (!command || (command.admin && !userIsAdmin))
-		return { command: null, params: null, expectedParamCount: null };
-
-	const params = splitMessage.slice(2, splitMessage.length);
-	const expectedParamCount = command.syntax.split(/ +/).length - 1;
-
-	let finalisedParams;
-	if (params.length > expectedParamCount)
-		finalisedParams = params.slice(0, expectedParamCount - 1).concat([params.slice(expectedParamCount - 1, params.length).join(" ")]);
-	else
-		finalisedParams = params;
-
-	return { command, params: finalisedParams, expectedParamCount };
 }
 
-function fromJSON(json) {
-	const guildsData = Object.keys(json);
-	guildsData.forEach(guildID => { json[guildID] = new GuildData(json[guildID]); });
-	return json;
-}
 
-function createHelpEmbed(name, config, userIsAdmin) {
-	const commandsArr = Object.keys(config.commands).map(x => config.commands[x]).filter(x => userIsAdmin || !x.admin);
-
-	const embed = new Discord.RichEmbed().setTitle(`__Help__ for ${PackageJSON.name.replace("discord-bot-", "")}`);
-
-	commandsArr.forEach(command => {
-		embed.addField(command.command, `${command.description}\n**Usage:** *${name} ${command.syntax}*${userIsAdmin && command.admin ? "\n***Admin only***" : ""}`);
-	});
-
-	embed.addField("__Need more help?__", `[Visit my website](${config.generic.website}) or [Join my Discord](${config.generic.discordInvite})`, true);
-
-	return { embed };
-}
+//CLIENT SETUP//
+const token = require("../" + process.argv[2]).token,
+	dataFile = process.argv[3],
+	commands = require("./commands.json"),
+	implementations = {
+		onReady,
+		onTextMessage,
+		setup,
+		viewSettings
+	};
+const client = new Core.Client(token, dataFile, commands, implementations, GuildData);
+client.bootstrap();
