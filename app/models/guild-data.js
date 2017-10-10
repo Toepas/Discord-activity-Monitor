@@ -1,9 +1,10 @@
+const Core = require("../../discord-bot-core");
 const DateDiff = require("date-diff");
 const DiscordUtil = require("../..//discord-bot-core").util;
 
-module.exports = class GuildData {
+module.exports = class GuildData extends Core.BaseGuildData{
 	constructor({ id, inactiveThresholdDays, activeRoleID, users, allowRoleAddition, ignoredUserIDs, ignoredRoleIDs }) {
-		this.id = id;
+		super(id);
 		this.inactiveThresholdDays = inactiveThresholdDays;
 		this.activeRoleID = activeRoleID;
 		this.users = users instanceof Object ? users : {};

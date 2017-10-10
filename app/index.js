@@ -1,44 +1,22 @@
 const Core = require("../discord-bot-core");
 const DiscordUtil = Core.util;
-const GuildSetupHelper = require("./models/guild-setup-helper.js");
 const GuildData = require("./models/guild-data.js");
 
-const setupHelpers = [];
+const token = require("../" + process.argv[2]).token,
+	dataFile = process.argv[3];
 
-//IMPLEMENTATIONS//
-function onReady(coreClient) {
-	checkUsersInAllGuilds(coreClient.actual, coreClient.guildsData);
-	setInterval(() => checkUsersInAllGuilds(coreClient.actual, coreClient.guildsData), 1 * 24 * 60 * 60 * 1000);
+const client = new Core.Client(token, dataFile, __dirname + "/commands", GuildData);
 
-	return Promise.resolve();
-}
+client.on("ready", () => {
+	checkUsersInAllGuilds(client, client.guildsData);
+	setInterval(() => checkUsersInAllGuilds(client, client.guildsData), 1 * 24 * 60 * 60 * 1000);
 
-function onTextMessage(message, guildData) {
-	registerActivity(message.guild, message.member, guildData);
-	return Promise.resolve();
-}
-
-function setup({ command, params, guildData, botName, message, coreClient }) {
-	return new Promise((resolve, reject) => {
-		const helper = new GuildSetupHelper(message);
-		let idx = setupHelpers.push(helper) - 1;
-
-		const existingUsers = guildData ? guildData.users : null;
-
-		helper.walkThroughSetup(coreClient.actual, message.channel, message.member, existingUsers)
-			.then(responseData => {
-				Object.assign(guildData, responseData);
-				resolve("Setup complete!");
-			})
-			.catch(e => reject("Error walking through guild setup for guild " + message.guild.name + ".\n" + (e.message || e)))
-			.then(() => setupHelpers.splice(idx - 1, 1));
+	client.on("message", message => {
+		registerActivity(message.guild, message.member, client.guildsData[message.guild.id]);
 	});
-}
+});
 
-function viewSettings({ command, params, guildData, botName, message, coreClient }) {
-	return Promise.resolve(`\`\`\`JavaScript\n ${guildData.toString()} \`\`\``);
-}
-
+client.bootstrap();
 
 //INTERNAL FUNCTIONS//
 function checkUsersInAllGuilds(client, guildsData) {
@@ -68,17 +46,3 @@ function registerActivity(guild, member, guildData) {
 		}
 	}
 }
-
-
-//CLIENT SETUP//
-const token = require("../" + process.argv[2]).token,
-	dataFile = process.argv[3],
-	commands = require("./commands.json"),
-	implementations = {
-		onReady,
-		onTextMessage,
-		setup,
-		viewSettings
-	};
-const client = new Core.Client(token, dataFile, commands, implementations, GuildData);
-client.bootstrap();
