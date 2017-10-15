@@ -7,13 +7,15 @@ const token = require("../" + process.argv[2]).token,
 
 const client = new Core.Client(token, dataFile, __dirname + "/commands", GuildData);
 
+client.on("beforeLogin", () => {
+	setInterval(() => checkUsersInAllGuilds(client, client.guildsData), 1 * 24 * 60 * 60 * 1000);
+});
+
 client.on("ready", () => {
 	checkUsersInAllGuilds(client, client.guildsData);
-	setInterval(() => checkUsersInAllGuilds(client, client.guildsData), 1 * 24 * 60 * 60 * 1000);
 
-	client.on("message", message => {
-		registerActivity(message.guild, message.member, client.guildsData[message.guild.id]);
-	});
+	client.on("message", message =>
+		registerActivity(message.guild, message.member, client.guildsData[message.guild.id]));
 });
 
 client.bootstrap();
