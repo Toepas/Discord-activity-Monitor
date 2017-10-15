@@ -43,7 +43,7 @@ function registerActivity(guild, member, guildData) {
 				&& !member.roles.some(role => guildData.ignoredRoleIDs.includes(role.id))) //member doesn't have one of the ignored role ids
 			{
 				member.addRole(activeRole)
-					.catch(e => DiscordUtil.dateError("Error adding active role to user " + member.user.username + " in guild " + guild.name, e));
+					.catch(err => DiscordUtil.dateError("Error adding active role to user " + member.user.username + " in guild " + guild.name, err.message || err));
 			}
 		}
 	}
