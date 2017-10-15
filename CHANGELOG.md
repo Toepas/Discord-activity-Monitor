@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.1.0
+
+### Added
+
+- Added Discord.js debug messages being printed to console
+
+### Updated
+
+- Updated to more stable bootstrapping and connection code
+
 ## v3.0.0
 
 ### Added
