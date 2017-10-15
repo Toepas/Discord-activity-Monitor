@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.1.1
+
+### Fixed
+
+- Fixed excess details being printed to console at permission exceptions
+
 ## v3.1.0
 
 ### Added
