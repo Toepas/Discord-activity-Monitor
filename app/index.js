@@ -33,7 +33,7 @@ function checkUsersInAllGuilds(client, guildsData) {
 }
 
 function registerActivity(guild, member, guildData) {
-	if (guildData) {
+	if (member && guildData) {
 		guildData.users[member.id] = new Date(); //store now as the latest date this user has interacted
 
 		if (guildData.allowRoleAddition && guildData.activeRoleID && guildData.activeRoleID.length > 0) { //check if we're allowed to assign roles as well as remove them in this guild
