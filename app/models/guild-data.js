@@ -28,13 +28,14 @@ module.exports = class GuildData extends Core.BaseGuildData {
 			if (member && !this.users[member.id])
 				this.users[member.id] = new Date();
 
-			else if (!this.ignoredUserIDs.includes(member.id) //member isn't in the list of ignored member ids
-				&& !member.roles.some(role => this.ignoredRoleIDs.includes(role.id)) //member doesn't have one of the ignored role ids
-				&& new DateDiff(now, Date.parse(this.users[member.id])).days() >= this.inactiveThresholdDays) //their last active date was more days ago than the threshold remove their role
+			else if (this.ignoredUserIDs.indexOf(member.id) < 0 &&
+				!member.roles.some(role => this.ignoredRoleIDs.indexOf(role.id) >= 0) &&
+				// @ts-ignore
+				new DateDiff(now, Date.parse(this.users[member.id])).days() >= this.inactiveThresholdDays) //this magic comment stops VSCode from auto formatting the below braces up here
 			{
 				member.removeRole(this.activeRoleID).catch(err => DiscordUtil.dateError("Error removing active role from user " + member.name + " in guild " + guild.name, err.message || err));
 
-				delete this.users[member.id]; //delete the user's last active time, as they have lost their role and thus don't matter anymore
+				delete this.users[member.id];
 			}
 		});
 	}
@@ -45,6 +46,6 @@ module.exports = class GuildData extends Core.BaseGuildData {
 
 	toString() {
 		const blacklist = ["id", "users"];
-		return JSON.stringify(this, (k, v) => !blacklist.includes(k) ? v : undefined, "\t");
+		return JSON.stringify(this, (k, v) => blacklist.indexOf(k) < 0 ? v : undefined, "\t");
 	}
 };
