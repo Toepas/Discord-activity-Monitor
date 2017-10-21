@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.1.2-b1
+
+### Added
+
+- Extra console log message to try be a bit more helpful diagnosing errors
+
+### Fixed
+
+- Fixed error caused by discord reporting undefined members (I think?)
+
 ## v3.1.1
 
 ### Fixed
