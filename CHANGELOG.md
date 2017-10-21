@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.1.2-b1
+## v3.1.2
 
 ### Added
 
@@ -9,6 +9,7 @@
 ### Fixed
 
 - Fixed error caused by discord reporting undefined members (I think?)
+- Fix messages without valid members taking the bot offline
 
 ## v3.1.1
 
