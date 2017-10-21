@@ -2,7 +2,7 @@ const Core = require("../../discord-bot-core");
 const DateDiff = require("date-diff");
 const DiscordUtil = require("../..//discord-bot-core").util;
 
-module.exports = class GuildData extends Core.BaseGuildData{
+module.exports = class GuildData extends Core.BaseGuildData {
 	constructor({ id, inactiveThresholdDays, activeRoleID, users, allowRoleAddition, ignoredUserIDs, ignoredRoleIDs }) {
 		super(id);
 		this.inactiveThresholdDays = inactiveThresholdDays;
@@ -24,8 +24,10 @@ module.exports = class GuildData extends Core.BaseGuildData{
 			return;
 
 		role.members.forEach(member => {
-			if (!this.users[member.id]) //if the member has the role but isn't tracked, track them from now
+			//don't ask me why, sometimes member is null, hence the if(member) check
+			if (member && !this.users[member.id])
 				this.users[member.id] = new Date();
+
 			else if (!this.ignoredUserIDs.includes(member.id) //member isn't in the list of ignored member ids
 				&& !member.roles.some(role => this.ignoredRoleIDs.includes(role.id)) //member doesn't have one of the ignored role ids
 				&& new DateDiff(now, Date.parse(this.users[member.id])).days() >= this.inactiveThresholdDays) //their last active date was more days ago than the threshold remove their role
