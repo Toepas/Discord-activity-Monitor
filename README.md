@@ -16,7 +16,7 @@ A discord bot to assign/remove a role from users in your guild based on whether 
 ## Invite
 
 By inviting this bot to your server you agree to the [terms and conditions](#privacy-statement) laid out in the privacy section of this document.  
-If you agree, invite to your server with [this link](https://discordapp.com/oauth2/authorize?client_id=337005754684932098&scope=bot&permissions=0x10000c00).
+If you agree, invite to your server with [this link](https://discordapp.com/oauth2/authorize?client_id=337005754684932098&scope=bot&permissions=0x10004c00).
 
 ## Setup
 
@@ -42,6 +42,7 @@ Each permission has a reason for being required, explained below.
 | Read messsages | Detect when people are active                                         |
 | Send messages  | Used to ask setup questions (can be disabled after setup is complete) |
 | Manage roles   | Assign and remove the active role from users                          |
+| Embed links    | Responses to 'help' requests use message embeds for nice formatting   |
 
 ## Privacy statement
 
@@ -63,6 +64,9 @@ Should you wish for the data stored about your server to be removed, please cont
 3. Run `npm install`
 4. Add *token.json* in the root folder: `{ "token": "your-token-goes-here" }`
 5. Run `npm start`
+
+**Note for git users**  
+If you cloned the repository with git, make sure you `git reset --hard vX.Y` to a specific version, as latest master isn't always production ready!
 
 ## Need help?
 
