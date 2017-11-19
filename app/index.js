@@ -16,8 +16,6 @@ client.on("ready", () => {
 
 	client.on("message", message =>
 		registerActivity(message.guild, message.member, client.guildsData[message.guild.id]));
-
-	DiscordUtil.dateLog("Added message listener in ready handler. Number of message listeners is now: " + client.listenerCount("ready"));
 });
 
 client.bootstrap();

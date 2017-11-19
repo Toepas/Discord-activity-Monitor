@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.1.3
+
+### Added
+
+- Removal of data when the bot is kicked from a guild
+- Added --name indicator to launch command to make it easier to identify process in htop
+
+### Updated
+
+- Route a lot of mostly irrelevant cnosole spam to a file instead of the console
+- Updated launch command to pass max-old-space-size parameter to limit memory usage
+
 ## v3.1.2
 
 ### Added
