@@ -28,6 +28,8 @@ module.exports = class Client extends Discord.Client {
 		this.on("ready", this.onReady);
 		this.on("message", this.onMessage);
 		this.on("debug", this.onDebug);
+		this.on("guildCreate", this.onGuildCreate);
+		this.on("guildDelete", this.onGuildDelete);
 		process.on("uncaughtException", err => this.onUnhandledException(this, err));
 	}
 
@@ -44,11 +46,15 @@ module.exports = class Client extends Discord.Client {
 	onReady() {
 		this.user.setGame(InternalConfig.website.replace(/^https?:\/\//, ""));
 		CoreUtil.dateLog(`Registered bot ${this.user.username}`);
+
+		for (let guildID of Object.keys(this.guildsData))
+			if (!this.guilds.get(guildID))
+				delete this.guildsData[guildID];
 	}
 
 	onMessage(message) {
 		if (message.channel.type === "text" && message.member) {
-			if(!this.guildsData[message.guild.id])
+			if (!this.guildsData[message.guild.id])
 				this.guildsData[message.guild.id] = new this.guildDataModel({ id: message.guild.id });
 			HandleMessage(this, message, this.commands, this.guildsData[message.guild.id]);
 		}
@@ -57,6 +63,16 @@ module.exports = class Client extends Discord.Client {
 	onDebug(info) {
 		if (!InternalConfig.debugIgnores.some(x => info.startsWith(x)))
 			CoreUtil.dateDebug(info);
+	}
+
+	onGuildCreate(guild) {
+		CoreUtil.dateLog(`Added to guild ${guild.name}`);
+	}
+
+	onGuildDelete(guild) {
+		CoreUtil.dateLog(`Removed from guild ${guild.name}, removing data for this guild`);
+		delete this.guildsData[guild.id];
+		this.writeFile();
 	}
 
 	onUnhandledException(client, err) {
@@ -81,7 +97,9 @@ module.exports = class Client extends Discord.Client {
 	 */
 	fromJSON(json) {
 		const guildsData = Object.keys(json);
-		guildsData.forEach(guildID => { json[guildID] = new this.guildDataModel(json[guildID]); });
+		guildsData.forEach(guildID => {
+			json[guildID] = new this.guildDataModel(json[guildID]);
+		});
 		return json;
 	}
 };
