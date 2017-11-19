@@ -61,8 +61,8 @@ module.exports = class Client extends Discord.Client {
 	}
 
 	onDebug(info) {
-		if (!InternalConfig.debugIgnores.some(x => info.startsWith(x)))
-			CoreUtil.dateDebug(info);
+		info = info.replace(/Authenticated using token [^ ]+/, "Authenticated using token [redacted]");
+		CoreUtil.dateDebug(info);
 	}
 
 	onGuildCreate(guild) {
@@ -92,8 +92,7 @@ module.exports = class Client extends Discord.Client {
 	}
 
 	/**
-	 * @param {*} json 
-	 * @param {*} guildDataModel 
+	 * @param {*} json
 	 */
 	fromJSON(json) {
 		const guildsData = Object.keys(json);
