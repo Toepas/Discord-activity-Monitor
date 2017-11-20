@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.1.4
+
+### Added
+
+- Some additional debug.log logging to help with identifying errors
+
+### Fixed
+
+- Fixed re-introcuded crash when bot recives a PM
+
 ## v3.1.3
 
 ### Added

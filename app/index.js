@@ -15,7 +15,7 @@ client.on("ready", () => {
 	checkUsersInAllGuilds(client, client.guildsData);
 
 	client.on("message", message => {
-		if (message.guild)
+		if (message.guild && message.member)
 			registerActivity(message.guild, message.member, client.guildsData[message.guild.id]);
 	});
 });
