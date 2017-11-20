@@ -76,11 +76,11 @@ module.exports = class Client extends Discord.Client {
 	}
 
 	onUnhandledException(client, err) {
-		CoreUtil.dateError(err.message || err);
+		CoreUtil.dateError(err);
 		CoreUtil.dateLog("Destroying existing client...");
 		client.destroy().then(() => {
 			CoreUtil.dateLog("Client destroyed, recreating...");
-			client.login(client._token);
+			setTimeout(() => client.login(client._token), InternalConfig.reconnectTimeout);
 		});
 	}
 
