@@ -14,9 +14,12 @@ client.on("beforeLogin", () => {
 client.on("ready", () => {
 	checkUsersInAllGuilds(client, client.guildsData);
 
-	client.on("message", message =>
-		registerActivity(message.guild, message.member, client.guildsData[message.guild.id]));
+	client.on("message", message => {
+		if (message.guild)
+			registerActivity(message.guild, message.member, client.guildsData[message.guild.id]);
+	});
 });
+
 
 client.bootstrap();
 
