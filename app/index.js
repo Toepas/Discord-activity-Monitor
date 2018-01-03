@@ -10,6 +10,7 @@ const client = new Core.Client(require("../token.json"), __dirname + "/commands"
 client.on("beforeLogin", () => {
 	setInterval(checkUsersInAllGuilds, 1 * 24 * 60 * 60 * 1000);
 	client.overrideDefaultCompactionSchedule(Config.dbCompactionSchedule);
+	require("./legacy-upgrader.js")(); //upgrade legacy json into new db format
 });
 
 client.on("ready", checkUsersInAllGuilds);
