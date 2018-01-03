@@ -1,6 +1,7 @@
 // @ts-ignore
 const Config = require("./config.json");
 const Core = require("../discord-bot-core");
+const CronJob = require("cron").CronJob;
 const DiscordUtil = Core.util;
 const GuildData = require("./models/guild-data.js");
 
@@ -8,7 +9,7 @@ const GuildData = require("./models/guild-data.js");
 const client = new Core.Client(require("../token.json"), __dirname + "/commands", GuildData);
 
 client.on("beforeLogin", () => {
-	setInterval(checkUsersInAllGuilds, 1 * 24 * 60 * 60 * 1000);
+	new CronJob(Config.activityUpdateSchedule, checkUsersInAllGuilds, null, true);
 	client.overrideDefaultCompactionSchedule(Config.dbCompactionSchedule);
 	require("./legacy-upgrader.js")(); //upgrade legacy json into new db format
 });

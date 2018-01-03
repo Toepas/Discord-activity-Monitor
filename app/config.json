@@ -1,3 +1,4 @@
 {
-	"dbCompactionSchedule": "0 * * * * *"
+	"dbCompactionSchedule": "0 * * * * *",
+	"activityUpdateSchedule": "0 0 0 * * *"
 }
