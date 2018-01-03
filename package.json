@@ -1,27 +1,29 @@
 {
-  "name": "discord-bot-activity-monitor",
-  "version": "3.1.4",
-  "main": "app/index.js",
-  "dependencies": {
-    "date-diff": "0.1.3",
-    "discord.js": "11.2.0",
-    "jsonfile": "3.0.1"
-  },
-  "devDependencies": {},
-  "scripts": {
-	  "postinstall": "cd ./discord-bot-core && npm install",
-    "start": "node app/index.js token.json guilds.json --max-old-space-size=50 --name=activity-monitor",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/benji7425/discord-bot-activity-monitor.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/benji7425/discord-bot-activity-monitor/issues"
-  },
-  "homepage": "https://github.com/benji7425/discord-bot-activity-monitor#readme",
-  "description": ""
+	"name": "discord-bot-activity-monitor",
+	"version": "3.1.4",
+	"main": "app/index.js",
+	"dependencies": {
+		"date-diff": "0.1.3",
+		"discord.js": "11.2.0",
+		"jsonfile": "3.0.1"
+	},
+	"devDependencies": {
+		"eslint": "4.14.0"
+	},
+	"scripts": {
+		"postinstall": "cd ./discord-bot-core && npm install",
+		"start": "node app/index.js token.json guilds.json --max-old-space-size=50 --name=activity-monitor",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/benji7425/discord-bot-activity-monitor.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/benji7425/discord-bot-activity-monitor/issues"
+	},
+	"homepage": "https://github.com/benji7425/discord-bot-activity-monitor#readme",
+	"description": ""
 }

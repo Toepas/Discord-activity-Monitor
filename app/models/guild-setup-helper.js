@@ -1,5 +1,4 @@
 const DiscordUtil = require("../../discord-bot-core").util;
-const GuildData = require("./guild-data.js");
 
 const setupSteps = [
 	{
@@ -81,16 +80,15 @@ module.exports = class {
 									.catch(e => askNext(e));
 							}).catch(reject);
 					else
-						resolve(new GuildData(
-							{
-								id: this.guild.id,
-								inactiveThresholdDays: responseData.inactiveThresholdDays,
-								activeRoleID: responseData.activeRoleID,
-								users: existingUsers || {},
-								allowRoleAddition: responseData.allowRoleAddition,
-								ignoredUserIDs: responseData.ignoredUserIDs,
-								ignoredRoleIDs: responseData.ignoredRoleIDs
-							}));
+						resolve(client.guildDataModel.create({
+							guildID: this.guild.id,
+							inactiveThresholdDays: responseData.inactiveThresholdDays,
+							activeRoleID: responseData.activeRoleID,
+							users: existingUsers || {},
+							allowRoleAddition: responseData.allowRoleAddition,
+							ignoredUserIDs: responseData.ignoredUserIDs,
+							ignoredRoleIDs: responseData.ignoredRoleIDs
+						}));
 				};
 			})();
 			askNext();

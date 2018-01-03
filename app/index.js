@@ -1,36 +1,32 @@
+// @ts-ignore
+const Config = require("./config.json");
 const Core = require("../discord-bot-core");
 const DiscordUtil = Core.util;
 const GuildData = require("./models/guild-data.js");
 
-const token = require("../" + process.argv[2]).token,
-	dataFile = process.argv[3];
-
-const client = new Core.Client(token, dataFile, __dirname + "/commands", GuildData);
+// @ts-ignore
+const client = new Core.Client(require("../token.json"), __dirname + "/commands", GuildData);
 
 client.on("beforeLogin", () => {
-	setInterval(() => checkUsersInAllGuilds(client, client.guildsData), 1 * 24 * 60 * 60 * 1000);
+	setInterval(checkUsersInAllGuilds, 1 * 24 * 60 * 60 * 1000);
+	client.overrideDefaultCompactionSchedule(Config.dbCompactionSchedule);
+	require("./legacy-upgrader.js")(); //upgrade legacy json into new db format
 });
 
-client.on("ready", () => {
-	checkUsersInAllGuilds(client, client.guildsData);
+client.on("ready", checkUsersInAllGuilds);
 
-	client.on("message", message => {
-		if (message.guild && message.member)
-			registerActivity(message.guild, message.member, client.guildsData[message.guild.id]);
-	});
+client.on("message", message => {
+	if (message.guild && message.member)
+		client.guildDataModel.findOne({ guildID: message.guild.id })
+			.then(guildData => registerActivity(message.guild, message.member, guildData));
 });
-
 
 client.bootstrap();
 
-//INTERNAL FUNCTIONS//
-function checkUsersInAllGuilds(client, guildsData) {
-	client.guilds.forEach(guild => {
-		const guildData = guildsData[guild.id];
-		if (guildData) {
-			guildData.checkUsers(client);
-		}
-	});
+function checkUsersInAllGuilds() {
+	client.guilds.forEach(guild =>
+		client.guildDataModel.findOne({ guildID: guild.id })
+			.then(guildData => guildData && guildData.checkUsers(client)));
 }
 
 function registerActivity(guild, member, guildData) {
@@ -49,5 +45,6 @@ function registerActivity(guild, member, guildData) {
 					.catch(err => DiscordUtil.dateError("Error adding active role to user " + member.user.username + " in guild " + guild.name, err.message || err));
 			}
 		}
+		guildData.save();
 	}
 }
