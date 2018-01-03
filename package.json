@@ -1,6 +1,6 @@
 {
 	"name": "discord-bot-activity-monitor",
-	"version": "3.1.4",
+	"version": "3.2.0",
 	"main": "app/index.js",
 	"dependencies": {
 		"cron": "1.3.0",
@@ -13,8 +13,7 @@
 	},
 	"scripts": {
 		"postinstall": "cd ./discord-bot-core && npm install",
-		"start": "node app/index.js token.json guilds.json --max-old-space-size=50 --name=activity-monitor",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"start": "node app/index.js --max-old-space-size=50 --name=activity-monitor"
 	},
 	"repository": {
 		"type": "git",
