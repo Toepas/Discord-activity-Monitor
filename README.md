@@ -1,4 +1,4 @@
-# Discord activity monitor
+# Discord Activity Monitor
 
 <!--summary-->
 A discord bot to assign/remove a role from users in your guild based on whether or not they have been active lately.
