@@ -13,7 +13,7 @@
 	},
 	"scripts": {
 		"postinstall": "cd ./discord-bot-core && npm install",
-		"start": "node app/index.js --max-old-space-size=50 --name=activity-monitor"
+		"start": "node app/index.js --name=activity-monitor"
 	},
 	"repository": {
 		"type": "git",
