@@ -1,3 +1,5 @@
+// @ts-ignore
+const Config = require("./config.json");
 const Core = require("../discord-bot-core");
 const DiscordUtil = Core.util;
 const GuildData = require("./models/guild-data.js");
@@ -7,6 +9,7 @@ const client = new Core.Client(require("../token.json"), __dirname + "/commands"
 
 client.on("beforeLogin", () => {
 	setInterval(checkUsersInAllGuilds, 1 * 24 * 60 * 60 * 1000);
+	client.overrideDefaultCompactionSchedule(Config.dbCompactionSchedule);
 });
 
 client.on("ready", checkUsersInAllGuilds);
@@ -19,7 +22,6 @@ client.on("message", message => {
 
 client.bootstrap();
 
-//INTERNAL FUNCTIONS//
 function checkUsersInAllGuilds() {
 	client.guilds.forEach(guild =>
 		client.guildDataModel.findOne({ guildID: guild.id })

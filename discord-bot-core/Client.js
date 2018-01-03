@@ -1,13 +1,15 @@
-const CoreUtil = require("./Util.js");
 const Camo = require("camo");
+const CoreUtil = require("./Util.js");
 const CronJob = require("cron").CronJob;
 const Discord = require("discord.js");
-const HandleGuildMessage = require("./HandleGuildMessage");
+const HandleGuildMessage = require("./HandleGuildMessage.js");
+// @ts-ignore
 const InternalConfig = require("./internal-config.json");
 const RequireAll = require("require-all");
 const Util = require("./Util.js");
 
 let neDB;
+let compactionJob;
 
 module.exports = class Client extends Discord.Client {
 	/**
@@ -77,7 +79,7 @@ module.exports = class Client extends Discord.Client {
 	bootstrap() {
 		Camo.connect("nedb://guilds-data").then(db => {
 			neDB = db;
-			new CronJob(InternalConfig.dbCompactionSchedule, compactCollections, null, true);
+			setCompactionCronJob();
 
 			this.emit("beforeLogin");
 			this.login(this._token);
@@ -91,7 +93,19 @@ module.exports = class Client extends Discord.Client {
 					guildData.delete();
 		});
 	}
+
+	overrideDefaultCompactionSchedule(cronExpression) {
+		InternalConfig.dbCompactionSchedule = cronExpression;
+		Util.dateLog("Overridden NeDB compaction schedule");
+		setCompactionCronJob();
+	}
 };
+
+function setCompactionCronJob() {
+	compactionJob && compactionJob.stop && compactionJob.stop();
+	compactionJob = new CronJob(InternalConfig.dbCompactionSchedule, compactCollections, null, true);
+	Util.dateLog("Initiated new NeDB compaction cron job");
+}
 
 function compactCollections() {
 	/*I realise it is a bit of a cheat to just access _collections in this manner, but in the absence of 
