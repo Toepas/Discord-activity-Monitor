@@ -12,7 +12,7 @@
 		"eslint": "4.14.0"
 	},
 	"scripts": {
-		"postinstall": "cd ./discord-bot-core && npm install",
+		"postinstall": "cd ./core && npm install",
 		"start": "node app/index.js --name=activity-monitor"
 	},
 	"repository": {
