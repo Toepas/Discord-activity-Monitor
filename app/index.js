@@ -20,6 +20,11 @@ client.on("message", message => {
             .then(guildData => registerActivity(message.guild, message.member, guildData));
 });
 
+client.on("voiceStateUpdate", member => {
+    client.guildDataModel.findOne({ guildID: member.guild.id })
+        .then(guildData => registerActivity(member.guild, member, guildData));
+});
+
 client.bootstrap();
 
 function checkUsersInAllGuilds() {
