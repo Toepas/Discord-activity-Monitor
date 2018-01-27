@@ -80,15 +80,14 @@ module.exports = class {
                                     .catch(e => askNext(e));
                             }).catch(reject);
                     else
-                        resolve(client.guildDataModel.create({
-                            guildID: this.guild.id,
+                        resolve({
                             inactiveThresholdDays: responseData.inactiveThresholdDays,
                             activeRoleID: responseData.activeRoleID,
                             users: existingUsers || {},
                             allowRoleAddition: responseData.allowRoleAddition,
                             ignoredUserIDs: responseData.ignoredUserIDs,
                             ignoredRoleIDs: responseData.ignoredRoleIDs
-                        }));
+                        });
                 };
             })();
             askNext();

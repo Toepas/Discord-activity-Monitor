@@ -16,12 +16,12 @@ client.on("ready", checkUsersInAllGuilds);
 
 client.on("message", message => {
     if (message.guild && message.member)
-        client.guildDataModel.findOne({ guildID: message.guild.id })
+        GuildData.findOne({ guildID: message.guild.id })
             .then(guildData => registerActivity(message.guild, message.member, guildData));
 });
 
 client.on("voiceStateUpdate", member => {
-    client.guildDataModel.findOne({ guildID: member.guild.id })
+    GuildData.findOne({ guildID: member.guild.id })
         .then(guildData => registerActivity(member.guild, member, guildData));
 });
 
@@ -29,12 +29,12 @@ client.bootstrap();
 
 function checkUsersInAllGuilds() {
     client.guilds.forEach(guild =>
-        client.guildDataModel.findOne({ guildID: guild.id })
+        GuildData.findOne({ guildID: guild.id })
             .then(guildData => guildData && guildData.checkUsers(client)));
 }
 
 function registerActivity(guild, member, guildData) {
-    if (member && guildData) {
+    if (member && guildData && member.id !== client.user.id) {
         guildData.users[member.id] = new Date(); //store now as the latest date this user has interacted
 
         if (guildData.allowRoleAddition && guildData.activeRoleID && guildData.activeRoleID.length > 0) { //check if we're allowed to assign roles as well as remove them in this guild
