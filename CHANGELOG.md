@@ -1,5 +1,14 @@
 # Changelog
-##v3.2.0
+## v3.3.0-b1
+### Added
+- Added voice join detection counting a user as 'active'
+- Reset command to reset data for the server
+- MongoDB compatibility
+
+### Fixed
+- Fixed 'setup' command sometimes not saving configuration values
+
+## v3.2.0
 ### Updated
 - Updated data storage to use a NeDB database rather than a json file
 
