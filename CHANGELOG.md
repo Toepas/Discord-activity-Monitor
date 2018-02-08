@@ -1,5 +1,15 @@
 # Changelog
-## v3.3.0-b1
+## v3.4.0
+### Added
+- Optional 'inactive' role to assign to users when they lose the active role
+    - If you already have the bot setup you can enable this feature by re-running setup - don't worry, your data won't be lost!
+    - 'Inactive' role will be removed when the user regains the 'active' role
+- 'Stats' command to view some interesting info about the bot
+
+### Fixed
+- Fixed anyone being able to run the guild reset command!
+
+## v3.3.0
 ### Added
 - Added voice join detection counting a user as 'active'
 - Reset command to reset data for the server
