@@ -8,19 +8,11 @@ module.exports = class GuildData extends Core.BaseGuildData {
 
         this.inactiveThresholdDays = { type: Number, default: 7, min: 1 };
         this.activeRoleID = String;
+        this.inactiveRoleID = String;
         this.users = { type: Object, default: {} };
         this.allowRoleAddition = Boolean;
         this.ignoredUserIDs = [String];
         this.ignoredRoleIDs = [String];
-
-        // this.schema({
-        // 	inactiveThresholdDays: Number,
-        // 	activeRoleID: String,
-        // 	users: this.users, //bit of a hack
-        // 	allowRoleAddition: Boolean,
-        // 	ignoredUserIDs: [String],
-        // 	ignoredRoleIDs: [String]
-        // });
     }
 
     checkUsers(client) {
