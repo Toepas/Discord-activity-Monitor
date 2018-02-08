@@ -36,8 +36,7 @@ module.exports = class GuildData extends Core.BaseGuildData {
             if (member && !this.users[member.id])
                 this.users[member.id] = new Date();
 
-            else if (this.shouldMarkInactive(member, now))
-            {
+            else if (this.shouldMarkInactive(member, now)) {
                 this.doMarkInactive(member);
 
                 delete this.users[member.id];
@@ -46,12 +45,10 @@ module.exports = class GuildData extends Core.BaseGuildData {
     }
 
     shouldMarkInactive(member, now) {
-        const notIgnoredUser = this.ignoredUserIDs.indexOf(member.id) < 0;
-        const notIgnoredRole = !member.roles.some(role => this.ignoredRoleIDs.indexOf(role.id) >= 0);
         // @ts-ignore because for whatever reason VSCode thinks .days() isn't available
         const isNowInactive = new DateDiff(now, Date.parse(this.users[member.id])).days() >= this.inactiveThresholdDays;
 
-        return [notIgnoredUser, notIgnoredRole, isNowInactive].every(x => x);
+        return !this.memberIsIgnored(member) && isNowInactive;
     }
 
     doMarkInactive(member) {
@@ -60,6 +57,27 @@ module.exports = class GuildData extends Core.BaseGuildData {
 
         if (this.inactiveRoleID && this.inactiveRoleID !== "disabled")
             member.addRole(this.inactiveRoleID);
+    }
+
+    shouldMarkActive(member) {
+        const notAlreadyActive = !member.roles.get(this.activeRoleID);
+
+        return !this.memberIsIgnored(member) && notAlreadyActive;
+    }
+
+    doMarkActive(member) {
+        member.addRole(this.activeRoleID)
+            .catch(err => DiscordUtil.dateError(`Error adding active role to user ${member.user.username} in guild ${member.guild.name}\n${err.message || err}`));
+
+        if (this.inactiveRoleID && this.inactiveRoleID !== "disabled")
+            member.removeRole(this.inactiveRoleID)
+                .catch(err => DiscordUtil.dateError(`Error removing active role from user ${member.user.username} in guild ${member.guild.name}\n${err.message || err}`));
+    }
+
+    memberIsIgnored(member) {
+        const isIgnoreduser = this.ignoredUserIDs.indexOf(member.id) > 0;
+        const hasIgnoredRole = member.roles.some(role => this.ignoredRoleIDs.indexOf(role.id) >= 0);
+        return isIgnoreduser || hasIgnoredRole;
     }
 
     toString() {

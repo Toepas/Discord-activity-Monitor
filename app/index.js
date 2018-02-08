@@ -37,18 +37,14 @@ function registerActivity(guild, member, guildData) {
     if (member && guildData && member.id !== client.user.id) {
         guildData.users[member.id] = new Date(); //store now as the latest date this user has interacted
 
-        if (guildData.allowRoleAddition && guildData.activeRoleID && guildData.activeRoleID.length > 0) { //check if we're allowed to assign roles as well as remove them in this guild
-            let activeRole = guild.roles.get(guildData.activeRoleID);
-
-            if (activeRole
-                && !member.roles.get(activeRole.id) //member doesn't already have active role
-                && !guildData.ignoredUserIDs.includes(member.id) //member isn't in the list of ignored member ids
-                && !member.roles.some(role => guildData.ignoredRoleIDs.includes(role.id))) //member doesn't have one of the ignored role ids
-            {
-                member.addRole(activeRole)
-                    .catch(err => DiscordUtil.dateError("Error adding active role to user " + member.user.username + " in guild " + guild.name, err.message || err));
-            }
+        if (canManageRoles(guildData)) {
+            if (guildData.shouldMarkActive(member))
+                guildData.doMarkActive(member);
         }
         guildData.save();
     }
+}
+
+function canManageRoles(guildData) {
+    return guildData.allowRoleAddition && guildData.activeRoleID && guildData.activeRoleID.length > 0;
 }
