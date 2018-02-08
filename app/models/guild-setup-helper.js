@@ -15,7 +15,7 @@ const setupSteps = [
         }
     },
     {
-        message: "Please @mention the role you with to use to indicate an 'active' user",
+        message: "Please @mention the role you with to use to indicate an *active* user",
         action: (message, responseData) => {
             return new Promise((resolve, reject) => {
                 //expect the message to be in the format @<snowflake>
@@ -36,6 +36,19 @@ const setupSteps = [
                     resolve(responseData.allowRoleAddition = msg === "yes");
                 else
                     reject("Please respond with either 'yes' or 'no'");
+            });
+        }
+    },
+    {
+        message: "Pleas @mention the role you wish to use to indicate an *inactive* user, or type 'disable' if you don't want this feature",
+        action: (message, responseData) => {
+            return new Promise((resolve, reject) => {
+                if (message.mentions.roles.size > 0)
+                    resolve(responseData.inactiveRoleID = message.mentions.roles.first().id);
+                else if (message.content.toLowerCase() === "disable")
+                    resolve(responseData.inactiveRoleID = "disabled");
+                else
+                    reject("Please @mention a role or say 'disable'");
             });
         }
     },
@@ -83,6 +96,7 @@ module.exports = class {
                         resolve({
                             inactiveThresholdDays: responseData.inactiveThresholdDays,
                             activeRoleID: responseData.activeRoleID,
+                            inactiveRoleID: responseData.inactiveRoleID,
                             users: existingUsers || {},
                             allowRoleAddition: responseData.allowRoleAddition,
                             ignoredUserIDs: responseData.ignoredUserIDs,
