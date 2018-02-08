@@ -6,13 +6,19 @@ module.exports = class GuildData extends Core.BaseGuildData {
     constructor() {
         super();
 
-        this.inactiveThresholdDays = { type: Number, default: 7, min: 1 };
-        this.activeRoleID = String;
-        this.inactiveRoleID = String;
-        this.users = { type: Object, default: {} };
-        this.allowRoleAddition = Boolean;
+        //defined below in .schema but also here to shut up some errors later on about .indexOf not being available
         this.ignoredUserIDs = [String];
         this.ignoredRoleIDs = [String];
+
+        this.schema({
+            inactiveThresholdDays: { type: Number, default: 7, min: 1 },
+            activeRoleID: String,
+            inactiveRoleID: String,
+            users: { type: Object, default: {} },
+            allowRoleAddition: Boolean,
+            ignoredUserIDs: [String],
+            ignoredRoleIDs: [String]
+        });
     }
 
     checkUsers(client) {
@@ -30,20 +36,30 @@ module.exports = class GuildData extends Core.BaseGuildData {
             if (member && !this.users[member.id])
                 this.users[member.id] = new Date();
 
-            else if (this.ignoredUserIDs.indexOf(member.id) < 0 &&
-                !member.roles.some(role => this.ignoredRoleIDs.indexOf(role.id) >= 0) &&
-                // @ts-ignore
-                new DateDiff(now, Date.parse(this.users[member.id])).days() >= this.inactiveThresholdDays) //this magic comment stops VSCode from auto formatting the below braces up here
+            else if (this.shouldMarkInactive(member, now))
             {
-                member.removeRole(this.activeRoleID).catch(err => DiscordUtil.dateError("Error removing active role from user " + member.name + " in guild " + guild.name, err.message || err));
+                this.doMarkInactive(member);
 
                 delete this.users[member.id];
             }
         });
     }
 
-    fromJSON(data) {
-        return Object.assign(this, data);
+    shouldMarkInactive(member, now) {
+        const notIgnoredUser = this.ignoredUserIDs.indexOf(member.id) < 0;
+        const notIgnoredRole = !member.roles.some(role => this.ignoredRoleIDs.indexOf(role.id) >= 0);
+        // @ts-ignore because for whatever reason VSCode thinks .days() isn't available
+        const isNowInactive = new DateDiff(now, Date.parse(this.users[member.id])).days() >= this.inactiveThresholdDays;
+
+        return [notIgnoredUser, notIgnoredRole, isNowInactive].every(x => x);
+    }
+
+    doMarkInactive(member) {
+        member.removeRole(this.activeRoleID)
+            .catch(err => DiscordUtil.dateError("Error removing active role from user " + member.name + " in guild " + member.guild.name, err.message || err));
+
+        if (this.inactiveRoleID && this.inactiveRoleID !== "disabled")
+            member.addRole(this.inactiveRoleID);
     }
 
     toString() {
