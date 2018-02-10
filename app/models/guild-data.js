@@ -75,7 +75,7 @@ module.exports = class GuildData extends Core.BaseGuildData {
     }
 
     memberIsIgnored(member) {
-        const isIgnoreduser = this.ignoredUserIDs.indexOf(member.id) > 0;
+        const isIgnoreduser = this.ignoredUserIDs.indexOf(member.id) >= 0;
         const hasIgnoredRole = member.roles.some(role => this.ignoredRoleIDs.indexOf(role.id) >= 0);
         return isIgnoreduser || hasIgnoredRole;
     }

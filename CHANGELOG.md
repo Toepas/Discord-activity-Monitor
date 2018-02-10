@@ -1,4 +1,8 @@
 # Changelog
+## v3.4.1
+### Fixed
+- Fixed off-by-one error causing first ignored user to not actually be ignored
+
 ## v3.4.0
 ### Added
 - Optional 'inactive' role to assign to users when they lose the active role
