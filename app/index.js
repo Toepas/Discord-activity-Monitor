@@ -2,7 +2,6 @@
 const Config = require("./config.json");
 const Core = require("../core");
 const CronJob = require("cron").CronJob;
-const DiscordUtil = Core.util;
 const GuildData = require("./models/guild-data.js");
 
 // @ts-ignore
