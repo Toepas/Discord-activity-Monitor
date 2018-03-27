@@ -1,4 +1,13 @@
 # Changelog
+## v3.5.0
+### Updated
+- Updated user activity checking
+	- Remove "shotgun" effect of every guild being checked once a day
+	- Iterate over the guilds to do one at a time (currently every 30 sec)
+
+### Fixed
+- Fix some spelling mistakes
+
 ## v3.4.1
 ### Fixed
 - Fixed off-by-one error causing first ignored user to not actually be ignored
