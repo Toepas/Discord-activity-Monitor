@@ -1,3 +1,3 @@
 {
-	"activityUpdateSchedule": "0 0 0 * * *"
+	"guildIterationInterval": "30000"
 }

@@ -1,17 +1,24 @@
 // @ts-ignore
 const Config = require("./config.json");
 const Core = require("../core");
-const CronJob = require("cron").CronJob;
 const GuildData = require("./models/guild-data.js");
+
+const guildsIterator = (function* () {
+    while (true) {
+        if (client.guilds.size === 0)
+            yield null;
+        else
+            for (let i = 0; i < client.guilds.size; i++)
+                yield [...client.guilds.values()][i];
+    }
+})();
 
 // @ts-ignore
 const client = new Core.Client(require("../token.json"), __dirname + "/commands", GuildData);
 
 client.on("beforeLogin", () => {
-    new CronJob(Config.activityUpdateSchedule, checkUsersInAllGuilds, null, true);
+    setInterval(doGuildIteration, Config.guildIterationInterval);
 });
-
-client.on("ready", checkUsersInAllGuilds);
 
 client.on("message", message => {
     if (message.guild && message.member)
@@ -26,10 +33,12 @@ client.on("voiceStateUpdate", member => {
 
 client.bootstrap();
 
-function checkUsersInAllGuilds() {
-    client.guilds.forEach(guild =>
+function doGuildIteration() {
+    const guild = guildsIterator.next().value;
+
+    if(guild)
         GuildData.findOne({ guildID: guild.id })
-            .then(guildData => guildData && guildData.checkUsers(client)));
+            .then(guildData => guildData && guildData.checkUsers(client));
 }
 
 function registerActivity(guild, member, guildData) {
