@@ -1,0 +1,31 @@
+{
+  "author": "Benji7425 <benji7425@pm.me> (http://benji7425.github.io/)",
+  "bugs": {
+    "url": "https://github.com/benji7425/discord-activity-monitor/issues"
+  },
+  "description": "Discord bot to add/remove roles based on user activity",
+  "files": [
+    "/lib",
+    "!*.map",
+    "!*.spec.*"
+  ],
+  "homepage": "https://github.com/benji7425/discord-activity-monitor#readme",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "name": "discord-activity-monitor",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benji7425/discord-activity-monitor.git"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/tsc",
+    "build-debug": "./node_modules/.bin/tsc --sourceMap",
+    "test": "./node_modules/.bin/ts-node ./test-runner.ts",
+    "start": "node lib/index.js --name role-assigner"
+  },
+  "types": "lib/index.d.ts",
+  "version": "4.0.0-a1",
+  "devDependencies": {
+    "typescript": "^3.4.1"
+  }
+}
