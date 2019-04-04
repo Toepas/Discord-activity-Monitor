@@ -26,6 +26,10 @@
   "types": "lib/index.d.ts",
   "version": "4.0.0-a1",
   "devDependencies": {
+    "@types/node": "^11.13.0",
     "typescript": "^3.4.1"
+  },
+  "dependencies": {
+    "disharmony": "^0.4.1"
   }
 }
