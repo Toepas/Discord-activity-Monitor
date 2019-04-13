@@ -15,7 +15,10 @@ async function invoke(params: string[], message: Message, client: IClient)
     catch (e)
     {
         const friendlyMsg = `Error during setup for guild ${message.guild.name}.\n`
-        Logger.debugLog(`${friendlyMsg} ${e.message || e}`)
+        Logger.debugLog(
+            `${friendlyMsg}
+                ${e.message || e}`,
+            true)
         throw friendlyMsg
     }
 }
