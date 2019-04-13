@@ -1,3 +1,4 @@
 module.exports = [
-    require("./setup")
+    require("./setup"),
+    require("./view-config")
 ]
