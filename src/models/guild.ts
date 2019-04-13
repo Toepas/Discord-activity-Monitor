@@ -26,9 +26,19 @@ export default class Guild extends BotGuild
         return this._users
     }
 
+    public configJson()
+    {
+        const blacklist = ["id", "_id", "users"]
+        return JSON.stringify(
+            this.toRecord(),
+            (k, v) => blacklist.indexOf(k) < 0 ? v : undefined,
+            "\t"
+        )
+    }
+
     public toRecord()
     {
-        this.record.users = [...this._users.entries()]
+        this.record.users = this._users ? [...this._users.entries()] : []
         return super.toRecord()
     }
 }
