@@ -10,6 +10,8 @@ export default class Guild extends BotGuild
     get activeRoleId(): string { return this.record.activeRoleId || "" }
     set activeRoleId(value: string) { this.record.activeRoleId = value }
 
+    get activeRole() { return this.djs.roles.get(this.activeRoleId) }
+
     get inactiveRoleId(): string { return this.record.inactiveRoleId || "" }
     set inactiveRoleId(value: string) { this.record.inactiveRoleId = value }
 

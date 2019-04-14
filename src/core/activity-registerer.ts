@@ -4,6 +4,12 @@ import Guild from "../models/guild";
 
 export default class ActivityRegisterer
 {
+    public startListening()
+    {
+        this.client.onMessage.sub(message => this.registerActivity(message.guild, message.member))
+        this.client.onVoiceStateUpdate.sub(member => this.registerActivity(new Guild(member.djs.guild), member))
+    }
+
     private async registerActivity(guild: Guild, member: BotGuildMember)
     {
         await guild.loadDocument()
@@ -56,9 +62,5 @@ export default class ActivityRegisterer
 
     constructor(
         private client: Client<Message>
-    )
-    {
-        this.client.onMessage.sub(message => this.registerActivity(message.guild, message.member))
-        this.client.onVoiceStateUpdate.sub(member => this.registerActivity(new Guild(member.djsGuild), member))
-    }
+    ) { }
 }
