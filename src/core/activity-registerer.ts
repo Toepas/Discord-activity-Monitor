@@ -2,7 +2,7 @@ import { Client, BotGuildMember, Logger } from "disharmony";
 import Message from "../models/message";
 import Guild from "../models/guild";
 
-export default class ActivityMonitor
+export default class ActivityRegisterer
 {
     private async registerActivity(guild: Guild, member: BotGuildMember)
     {
