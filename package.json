@@ -30,6 +30,7 @@
     "typescript": "^3.4.1"
   },
   "dependencies": {
-    "disharmony": "^0.5.0"
+    "discord.js": "^11.4.2",
+    "disharmony": "file:../disharmony"
   }
 }
