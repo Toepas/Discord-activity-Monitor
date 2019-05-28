@@ -3,12 +3,13 @@ import Message from "./models/message";
 import * as Cluster from "cluster"
 import ActivityRegisterer from "./core/activity-registerer";
 import InactivityManager from "./core/inactivity-manager";
+import commands from "./commands"
 
 const token = require("fs").readFileSync("./token", "utf8")
 
 if (Cluster.isMaster)
 {
-    const client = new Client("Role Assigner", require("./commands"), Message)
+    const client = new Client("Role Assigner", commands, Message)
     new ActivityRegisterer(client).startListening()
 
     client.initialize(token)

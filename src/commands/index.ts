@@ -1,4 +1,7 @@
-module.exports = [
-    require("./setup"),
-    require("./view-config")
+import setup from "./setup"
+import viewConfig from "./view-config"
+
+export default [
+    setup,
+    viewConfig
 ]

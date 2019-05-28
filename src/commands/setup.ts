@@ -18,7 +18,7 @@ async function invoke(_: string[], message: Message, client: IClient)
     }
 }
 
-module.exports = new Command(
+export default new Command(
     /*syntax*/          "setup",
     /*description*/     "Setup activity monitor for this server",
     /*permissionLevel*/ PermissionLevel.Admin,
