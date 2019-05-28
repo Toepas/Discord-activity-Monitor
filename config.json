@@ -1,0 +1,10 @@
+{
+    "token": "",
+    "dbConnectionString": "nedb://nedb-data",
+    "serviceName": "Activity Monitor",
+    "requiredPermissions": 268454912,
+    "askTimeoutMs": 30000,
+    "dbClientConfig": {
+        "compactionWriteCount": 100
+    }
+}
