@@ -18,8 +18,19 @@ export default class Guild extends BotGuild
     get allowRoleAddition(): boolean { return this.record.allowRoleAddition }
     set allowRoleAddition(value: boolean) { this.record.allowRoleAddition = value }
 
-    get ignoredUserIds(): string[] { return this.record.ignoredUserIds = this.record.ignoredUserIds || [] }
-    get ignoredRoleIds(): string[] { return this.record.ignoredRoleIds = this.record.ignoredRoleIds || [] }
+    get ignoredUserIds(): string[]
+    {
+        if (!this.record.ignoredUserIds)
+            this.record.ignoredUserIds = []
+        return this.record.ignoredUserIds
+    }
+    
+    get ignoredRoleIds(): string[]
+    {
+        if (!this.record.ignoredRoleIds)
+            this.record.ignoredRoleIds = []
+        return this.record.ignoredRoleIds
+    }
 
     get users(): Map<string, Date>
     {
