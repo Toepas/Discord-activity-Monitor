@@ -19,7 +19,7 @@ export default class ActivityRegisterer
         {
             guild.users.set(member.id, new Date())
             await this.markActiveIfNotIgnored(guild, member, true)
-            guild.save()
+            await guild.save()
         }
     }
 

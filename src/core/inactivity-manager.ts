@@ -5,10 +5,10 @@ export default class InactivityManager
 {
     public async manageInactiveUsersInAllGuilds()
     {
-        Logger.debugLog("Beginning guild iteration to manage inactive users")
+        await Logger.debugLog("Beginning guild iteration to manage inactive users")
         for (let guild of this.client.djs.guilds.values())
             await this.manageInactiveUsersInGuild(guild.id)
-        Logger.debugLog("Guilds iteration complete")
+        await Logger.debugLog("Guilds iteration complete")
     }
 
     public async manageInactiveUsersInGuild(guildId: string)
@@ -78,11 +78,12 @@ if (!module.parent)
         {
             await inactivityManager.manageInactiveUsersInAllGuilds()
             await client.destroy()
+            await Logger.debugLog("Finished managing inactives, exiting worker")
             process.exit(0)
         })
         .catch(async err =>
         {
-            await (Logger.debugLogError("Error running the inactivity monitor", err) as Promise<void>)
+            await Logger.debugLogError("Error running the inactivity monitor", err)
             process.exit(1)
         })
 }
