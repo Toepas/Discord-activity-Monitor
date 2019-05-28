@@ -5,7 +5,7 @@ import ActivityRegisterer from "./core/activity-registerer";
 import commands from "./commands"
 import { resolve } from "path";
 
-const { config, configPath } = loadConfig()
+const { config, configPath, isLocalDb } = loadConfig()
 
 if (Cluster.isMaster)
 {
@@ -14,12 +14,13 @@ if (Cluster.isMaster)
         .then(() =>
         {
             new ActivityRegisterer(client).startListening()
-            setTimeout(runInactivityManager, 24 * 60 * 60 * 1000);
+            setInterval(runInactivityManager, 24 * 60 * 60 * 1000, client, !isLocalDb);
+            runInactivityManager(client, !isLocalDb)
         })
-        .catch(err =>
+        .catch(async err =>
         {
-            (Logger.consoleLogError("Error during initialisation", err) as Promise<void>)
-                .then(() => process.exit(1)).catch(() => process.exit(1))
+            await Logger.consoleLogError("Error during initialisation", err)
+            process.exit(1)
         })
 }
 
@@ -30,8 +31,8 @@ async function runInactivityManager(client: Client<Message>, useForkedProcess: b
         forkWorkerClient(resolve(__dirname, path), configPath)
     else
     {
-        const InactivityMonitor = (await import(path)).default
-        await new InactivityMonitor(client).manageInactiveUsersInAllGuilds()
-        process.exit(0)
+        const InactivityManager = (await import(path)).default
+        await new InactivityManager(client).manageInactiveUsersInAllGuilds()
+        await Logger.debugLog("Finished managing inactives")
     }
 }
