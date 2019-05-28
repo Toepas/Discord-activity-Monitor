@@ -1,39 +1,19 @@
-import { initialize as initializeDb } from "disharmony/dist/database/db-client"
-import { Client as DjsClient } from "discord.js"
 import Guild from "../models/guild";
-import { Logger } from "disharmony";
+import { Logger, LightClient, loadConfig } from "disharmony";
 
 export default class InactivityManager
 {
-    private djsClient: DjsClient
-
-    public async connect(token: string)
-    {
-        const dbConnectionString = "nedb://nedb-data"
-        initializeDb(dbConnectionString)
-
-        this.djsClient = new DjsClient({
-            messageCacheMaxSize: 2
-        })
-        await this.djsClient.login(token.replace(/\r?\n|\r/g, ""))
-    }
-
-    public async disconnect()
-    {
-        await this.djsClient.destroy()
-    }
-
     public async manageInactiveUsersInAllGuilds()
     {
         Logger.debugLog("Beginning guild iteration to manage inactive users")
-        for (let guild of this.djsClient.guilds.values())
+        for (let guild of this.client.djs.guilds.values())
             await this.manageInactiveUsersInGuild(guild.id)
         Logger.debugLog("Guilds iteration complete")
     }
 
     public async manageInactiveUsersInGuild(guildId: string)
     {
-        const djsGuild = this.djsClient.guilds.get(guildId)
+        const djsGuild = this.client.djs.guilds.get(guildId)
         if (!djsGuild)
             return
 
@@ -57,28 +37,52 @@ export default class InactivityManager
                 Logger.debugLog(`User ${member.user.username} has active role but not found in database, adding new entry`)
             }
             else if (this.isInactiveBeyondThreshold(guild.users.get(member.id)!, now, guild.inactiveThresholdDays))
+            {
+                try
                 {
-                    try
-                    {
-                        await member.removeRole(guild.activeRole)
-                        if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
-                            await member.addRole(guild.inactiveRoleId)
-                        guild.users.delete(member.id)
-                        Logger.debugLog(`Updated now inactive user ${member.user.username}`)
-                    }
-                    catch (e)
-                    {
-                        Logger.consoleLog(`Error switching user ${member.user.username} to inactive in guild ${guild.name}`, true)
-                    }
+                    await member.removeRole(guild.activeRole)
+                    if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
+                        await member.addRole(guild.inactiveRoleId)
+                    guild.users.delete(member.id)
+                    Logger.debugLog(`Updated now inactive user ${member.user.username}`)
+                }
+                catch (e)
+                {
+                    Logger.debugLogError(`Error switching user ${member.user.username} to inactive in guild ${guild.name}`, e)
                 }
             }
-
-            await guild.save()
         }
+
+        await guild.save()
+    }
 
     private isInactiveBeyondThreshold(lastActiveDate: Date, now: Date, thresholdDays: number): boolean
     {
         const dayLength = 24 * 60 * 60 * 1000
         return Math.round(Math.abs(now.getTime() - lastActiveDate.getTime()) / dayLength) > thresholdDays
     }
+
+    constructor(
+        private client: LightClient
+    ) { }
+}
+
+if (!module.parent)
+{
+    const configPath = process.argv[2]
+    const { config } = loadConfig(configPath)
+    const client = new LightClient(config)
+    const inactivityManager = new InactivityManager(client)
+    client.initialize(config.token)
+        .then(async () =>
+        {
+            await inactivityManager.manageInactiveUsersInAllGuilds()
+            await client.destroy()
+            process.exit(0)
+        })
+        .catch(async err =>
+        {
+            await (Logger.debugLogError("Error running the inactivity monitor", err) as Promise<void>)
+            process.exit(1)
+        })
 }

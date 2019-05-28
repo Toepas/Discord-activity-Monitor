@@ -1,48 +1,37 @@
-import { Client, Logger } from "disharmony"
+import { Client, Logger, forkWorkerClient, loadConfig } from "disharmony"
 import Message from "./models/message";
 import * as Cluster from "cluster"
 import ActivityRegisterer from "./core/activity-registerer";
-import InactivityManager from "./core/inactivity-manager";
 import commands from "./commands"
+import { resolve } from "path";
 
-const token = require("fs").readFileSync("./token", "utf8")
+const { config, configPath } = loadConfig()
 
 if (Cluster.isMaster)
 {
-    const client = new Client("Role Assigner", commands, Message)
-    new ActivityRegisterer(client).startListening()
-
-    client.initialize(token)
-
-    setTimeout(spawnInactiveUserManagementWorker, 24 * 60 * 60 * 1000)
-}
-else
-{
-    manageInactiveMembersInAllGuilds()
-}
-
-async function manageInactiveMembersInAllGuilds()
-{
-    const inactivityManager = new InactivityManager()
-    await inactivityManager.connect(token)
-    await inactivityManager.manageInactiveUsersInAllGuilds()
-    await inactivityManager.disconnect();
-    process.exit(0)
+    const client = new Client(commands, Message, config!)
+    client.initialize(config.token)
+        .then(() =>
+        {
+            new ActivityRegisterer(client).startListening()
+            setTimeout(runInactivityManager, 24 * 60 * 60 * 1000);
+        })
+        .catch(err =>
+        {
+            (Logger.consoleLogError("Error during initialisation", err) as Promise<void>)
+                .then(() => process.exit(1)).catch(() => process.exit(1))
+        })
 }
 
-function spawnInactiveUserManagementWorker()
+async function runInactivityManager(client: Client<Message>, useForkedProcess: boolean)
 {
-    const worker = Cluster.fork()
-    Logger.debugLog(`Spawned process PID ${worker.process.pid} to manage inactive users`)
-    const killWorker = () => worker.kill()
-
-    process.on("SIGINT", killWorker)
-    process.on("exit", killWorker)
-
-    worker.on("exit", () =>
+    const path = "./core/inactivity-manager"
+    if (useForkedProcess)
+        forkWorkerClient(resolve(__dirname, path), configPath)
+    else
     {
-        Logger.debugLog(`Process ${worker.process.pid} exited`)
-        process.removeListener("SIGINT", killWorker)
-        process.removeListener("exit", killWorker)
-    })
+        const InactivityMonitor = (await import(path)).default
+        await new InactivityMonitor(client).manageInactiveUsersInAllGuilds()
+        process.exit(0)
+    }
 }
