@@ -1,8 +1,8 @@
-import { Command, IClient, PermissionLevel, Logger } from "disharmony"
+import { Command, IClient, PermissionLevel, Logger, CommandRejection } from "disharmony"
 import Message from "../models/message";
 import SetupHelper from "../core/setup-helper";
 
-async function invoke(params: string[], message: Message, client: IClient)
+async function invoke(_: string[], message: Message, client: IClient)
 {
     const setupHelper = new SetupHelper()
 
@@ -14,19 +14,13 @@ async function invoke(params: string[], message: Message, client: IClient)
     }
     catch (e)
     {
-        const friendlyMsg = `Error during setup for guild ${message.guild.name}.\n`
-        Logger.debugLog(
-            `${friendlyMsg}
-                ${e.message || e}`,
-            true)
-        throw friendlyMsg
+        throw new CommandRejection(`Error during setup for guild ${message.guild.name}.\n`)
     }
 }
 
 module.exports = new Command(
-    /*name*/            "setup",
-    /*description*/     "Setup activity monitor for this server",
     /*syntax*/          "setup",
+    /*description*/     "Setup activity monitor for this server",
     /*permissionLevel*/ PermissionLevel.Admin,
     /*invoke*/          invoke
 )

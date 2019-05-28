@@ -41,10 +41,7 @@ export default class ActivityRegisterer
         }
         catch (e)
         {
-            Logger.consoleLog(
-                `Error marking user ${member.username} ${isActive ? "active" : "inactive"} in guild ${guild.name}.
-                    ${e.message || e}`,
-                true)
+            Logger.debugLogError(`Error marking user ${member.username} ${isActive ? "active" : "inactive"} in guild ${guild.name}.`, e)
         }
     }
 
