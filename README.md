@@ -57,9 +57,8 @@ Each permission has a reason for being required, explained below.
 1. Install [Node.js v10](https://nodejs.org/en/) and 
 2. Clone the repository, or download and extract the zip file (preferrably from the [release page](https://github.com/benji7425/discord-activity-monitor/releases))
 3. Add a file named *token* in the root folder; paste in your bot token
-3. Run `npm install` to install dependencies
-4. Run `npm run build` to generate output javascript
-6. Run `npm start` to start the bot
+3. Run `npm run full-start` to compile and run the bot
+	- If you see yellow 'WARN' messages about peer dependencies, you can safely ignore these
 
 **Note for git users**  
 If you cloned the repository with git, make sure you `git reset --hard vX.Y` to a specific version, as latest master isn't always production ready!

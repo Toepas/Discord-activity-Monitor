@@ -18,13 +18,13 @@
     "url": "git+https://github.com/benji7425/discord-activity-monitor.git"
   },
   "scripts": {
-    "build": "./node_modules/.bin/tsc",
-    "build-debug": "./node_modules/.bin/tsc --sourceMap",
-    "test": "node ./test-runner.js",
-    "start": "node dist/index.js --name role-assigner"
+    "start": "node ./dist/index.js --name rss-fetcher",
+    "build": "./node_modules/.bin/tsc --sourceMap",
+    "lint": "./node_modules/.bin/tslint --project .",
+    "full-start": "npm install && npm run build && npm start"
   },
   "types": "dist/index.d.ts",
-  "version": "4.0.0-a1",
+  "version": "4.0.0-b1",
   "devDependencies": {
     "@types/node": "^11.13.0",
     "tslint": "^5.16.0",
