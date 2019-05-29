@@ -1,6 +1,6 @@
-import { Command, IClient, PermissionLevel, Logger, CommandRejection } from "disharmony"
-import Message from "../models/message";
+import { Command, CommandRejection, IClient, Logger, PermissionLevel } from "disharmony"
 import SetupHelper from "../core/setup-helper";
+import Message from "../models/message";
 
 async function invoke(_: string[], message: Message, client: IClient)
 {
@@ -9,7 +9,7 @@ async function invoke(_: string[], message: Message, client: IClient)
     try
     {
         await setupHelper.walkThroughSetup(client, message)
-        message.guild.save()
+        await message.guild.save()
         return "Setup complete!"
     }
     catch (e)
@@ -22,5 +22,5 @@ export default new Command(
     /*syntax*/          "setup",
     /*description*/     "Setup activity monitor for this server",
     /*permissionLevel*/ PermissionLevel.Admin,
-    /*invoke*/          invoke
+    /*invoke*/          invoke,
 )

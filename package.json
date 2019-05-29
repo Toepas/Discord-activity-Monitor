@@ -27,6 +27,7 @@
   "version": "4.0.0-a1",
   "devDependencies": {
     "@types/node": "^11.13.0",
+    "tslint": "^5.16.0",
     "typescript": "^3.4.1"
   },
   "dependencies": {

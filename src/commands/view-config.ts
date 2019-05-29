@@ -10,5 +10,5 @@ export default new Command(
     /*syntax*/          "view-config",
     /*description*/     "View configuration for this server",
     /*permissionLevel*/ PermissionLevel.Admin,
-    /*invoke*/          invoke
+    /*invoke*/          invoke,
 )

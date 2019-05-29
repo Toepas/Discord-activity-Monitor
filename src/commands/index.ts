@@ -3,5 +3,5 @@ import viewConfig from "./view-config"
 
 export default [
     setup,
-    viewConfig
+    viewConfig,
 ]

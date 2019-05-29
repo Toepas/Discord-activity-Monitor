@@ -1,12 +1,12 @@
+import { LightClient, loadConfig, Logger } from "disharmony";
 import Guild from "../models/guild";
-import { Logger, LightClient, loadConfig } from "disharmony";
 
 export default class InactivityManager
 {
     public async manageInactiveUsersInAllGuilds()
     {
         await Logger.debugLog("Beginning guild iteration to manage inactive users")
-        for (let guild of this.client.djs.guilds.values())
+        for (const guild of this.client.djs.guilds.values())
             await this.manageInactiveUsersInGuild(guild.id)
         await Logger.debugLog("Guilds iteration complete")
     }
@@ -24,16 +24,16 @@ export default class InactivityManager
             return
 
         Logger.debugLog(`Managing inactives for guild ${guild.name}`)
-        for (let member of guild.activeRole.members.values())
+        for (const member of guild.activeRole.members.values())
         {
-            //don't ask me why, sometimes member is null
+            // don't ask me why, sometimes member is null
             if (!member)
                 return
 
             const now = new Date()
             if (!guild.users.get(member.id))
             {
-                guild.users.set(member.id, now) //if a user has the active role but isn't in the database, add them
+                guild.users.set(member.id, now) // if a user has the active role but isn't in the database, add them
                 Logger.debugLog(`User ${member.user.username} has active role but not found in database, adding new entry`)
             }
             else if (this.isInactiveBeyondThreshold(guild.users.get(member.id)!, now, guild.inactiveThresholdDays))
@@ -63,7 +63,7 @@ export default class InactivityManager
     }
 
     constructor(
-        private client: LightClient
+        private client: LightClient,
     ) { }
 }
 

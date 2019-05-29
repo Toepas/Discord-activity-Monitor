@@ -1,9 +1,9 @@
-import { Client, Logger, forkWorkerClient, loadConfig } from "disharmony"
-import Message from "./models/message";
 import * as Cluster from "cluster"
-import ActivityRegisterer from "./core/activity-registerer";
-import commands from "./commands"
+import { Client, forkWorkerClient, loadConfig, Logger } from "disharmony"
 import { resolve } from "path";
+import commands from "./commands"
+import ActivityRegisterer from "./core/activity-registerer";
+import Message from "./models/message";
 
 const { config, configPath, isLocalDb } = loadConfig()
 
@@ -16,6 +16,7 @@ if (Cluster.isMaster)
             new ActivityRegisterer(client).startListening()
             setInterval(runInactivityManager, 24 * 60 * 60 * 1000, client, !isLocalDb);
             runInactivityManager(client, !isLocalDb)
+                .catch(err => Logger.debugLogError("Error running inactivity monitor for the first time. It is likely that subsequent executions will also error.", err))
         })
         .catch(async err =>
         {
@@ -31,6 +32,7 @@ async function runInactivityManager(client: Client<Message>, useForkedProcess: b
         forkWorkerClient(resolve(__dirname, path), configPath)
     else
     {
+        // tslint:disable-next-line: variable-name
         const InactivityManager = (await import(path)).default
         await new InactivityManager(client).manageInactiveUsersInAllGuilds()
         await Logger.debugLog("Finished managing inactives")

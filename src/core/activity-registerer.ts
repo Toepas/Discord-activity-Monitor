@@ -1,6 +1,6 @@
-import { Client, BotGuildMember, Logger } from "disharmony";
-import Message from "../models/message";
+import { BotGuildMember, Client, Logger } from "disharmony";
 import Guild from "../models/guild";
+import Message from "../models/message";
 
 export default class ActivityRegisterer
 {
@@ -14,7 +14,7 @@ export default class ActivityRegisterer
     {
         await guild.loadDocument()
         if (guild
-            && member && member.id != this.client.botId
+            && member && member.id !== this.client.botId
             && this.isGuildSetUp(guild))
         {
             guild.users.set(member.id, new Date())
@@ -58,6 +58,6 @@ export default class ActivityRegisterer
     }
 
     constructor(
-        private client: Client<Message>
+        private client: Client<Message>,
     ) { }
 }

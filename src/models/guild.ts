@@ -24,7 +24,7 @@ export default class Guild extends BotGuild
             this.record.ignoredUserIds = []
         return this.record.ignoredUserIds
     }
-    
+
     get ignoredRoleIds(): string[]
     {
         if (!this.record.ignoredRoleIds)
@@ -45,7 +45,7 @@ export default class Guild extends BotGuild
         return JSON.stringify(
             this.toRecord(),
             (k, v) => blacklist.indexOf(k) < 0 ? v : undefined,
-            "\t"
+            "\t",
         )
     }
 
