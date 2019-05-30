@@ -3,7 +3,7 @@ import Message from "../models/message";
 
 async function invoke(_: string[], message: Message)
 {
-    return `\`\`\`JavaScript\n ${message.guild.configJson()}\`\`\``
+    return `\`\`\`JavaScript\n ${message.guild.getConfigJson()}\`\`\``
 }
 
 export default new Command(

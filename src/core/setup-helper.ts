@@ -77,7 +77,7 @@ export default class SetupHelper
                 const answer: BotMessage = await Message.ask(client, message.channelId, question, message.member, true)
                 question = step.action(answer, message.guild)
                 if (question)
-                    question += ".  Please try again."
+                    question += ". Please try again."
             }
         }
     }
