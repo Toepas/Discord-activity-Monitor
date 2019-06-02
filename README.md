@@ -13,18 +13,14 @@ A Discord bot to assign/remove a role from users in your guild based on whether 
 <!--/features-->
 
 ## Use cases
-- You want to keep active members at the top of the members sidebar
-- You want to reward active members for participating in the community
-- You want to recognise how many inactive members your server has
-
-## Examples
-- Active users can easily see which other active users are online, without the sidebar being full of lurkers
-- After a period of time inactive users could lose read/write permissions until re-enabled by a moderator
+- Keep active members at the top of the members sidebar
+- Reward active members for participating in the community
+- Recognise how many inactive members your server has
 
 ## Getting started
 ### Invite
-- By using this bot you agree to the terms laid out in the [Privacy & Terms](./docs/privacy-and-terms) document
-- If you agree, use my [public invite]() (coming soon!) to invite the bot to your server
+- By using this bot you agree to the terms laid out in the [Privacy & Terms](./docs/privacy-and-terms.md) document
+- If you agree, use my [public invite](https://discordapp.com/oauth2/authorize?client_id=575115003875688448&scope=bot&permissions=268454912) to invite the bot to your server
 
 ### Setup
 **Admin only**
@@ -39,7 +35,7 @@ Setup requires administrator permission in the Discord server
 - You can view your guild settings with `@Activity Monitor view-config`
 
 Example:  
-![example image](http://i.imgur.com/3W8jN4I.png)
+![example](https://i.imgur.com/CHqCEc2.png)
 
 ### Permissions
 
