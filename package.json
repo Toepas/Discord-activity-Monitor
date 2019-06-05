@@ -18,7 +18,7 @@
     "url": "git+https://github.com/benji7425/discord-activity-monitor.git"
   },
   "scripts": {
-    "start": "node ./dist/index.js --name rss-fetcher",
+    "start": "node ./dist/index.js --name activity-monitor",
     "build": "./node_modules/.bin/tsc --sourceMap",
     "lint": "./node_modules/.bin/tslint --project .",
     "full-start": "npm install && npm run build && npm start"
