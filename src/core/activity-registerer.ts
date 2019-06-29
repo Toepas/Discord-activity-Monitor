@@ -1,21 +1,21 @@
+import { TextChannel } from "discord.js";
 import { BotGuildMember, Client, Logger } from "disharmony";
 import Guild from "../models/guild";
 import Message from "../models/message";
-import { TextChannel } from "discord.js";
 
 export default class ActivityRegisterer
 {
     public startListening()
     {
         this.client.onMessage.sub(message => this.registerActivity(message.guild, message.member, (message.djs.channel as TextChannel).name))
-        this.client.djs.on("voiceStateUpdate", (oldMember, newMember) => 
+        this.client.djs.on("voiceStateUpdate", (oldMember, newMember) =>
             this.registerActivity(
                 new Guild(newMember.guild),
                 new BotGuildMember(newMember),
                 (newMember.voiceChannel || oldMember.voiceChannel).name))
     }
 
-    private async registerActivity(guild: Guild, member: BotGuildMember, channelName: String)
+    private async registerActivity(guild: Guild, member: BotGuildMember, channelName: string)
     {
         await guild.loadDocument()
         if (guild
@@ -28,7 +28,7 @@ export default class ActivityRegisterer
         }
     }
 
-    private async markActiveIfNotIgnored(guild: Guild, member: BotGuildMember, channelName: String)
+    private async markActiveIfNotIgnored(guild: Guild, member: BotGuildMember, channelName: string)
     {
         try
         {
