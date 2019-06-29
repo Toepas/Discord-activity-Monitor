@@ -10,7 +10,7 @@ const { config, configPath, isLocalDb } = loadConfig()
 if (Cluster.isMaster)
 {
     const client = new Client(commands, Message, config!)
-    client.initialize(config.token)
+    client.login(config.token)
         .then(() =>
         {
             new ActivityRegisterer(client).startListening()

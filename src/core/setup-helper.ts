@@ -1,4 +1,4 @@
-import { BotMessage, IClient } from "disharmony";
+import { BotMessage, IClient, Question } from "disharmony";
 import Guild from "../models/guild";
 import Message from "../models/message";
 
@@ -71,13 +71,14 @@ export default class SetupHelper
     {
         for (const step of steps)
         {
-            let question: string | undefined = step.message
-            while (question)
+            let queryStr: string | undefined = step.message
+            while (queryStr)
             {
-                const answer: BotMessage = await Message.ask(client, message.channelId, question, message.member, true)
-                question = step.action(answer, message.guild)
-                if (question)
-                    question += ". Please try again."
+                const question = new Question(client, message.channelId, queryStr, message.member, true)
+                const answer: BotMessage = await question.send() // TODO better handling for question errors (currently just caught by caller)
+                queryStr = step.action(answer, message.guild)
+                if (queryStr)
+                    queryStr += ". Please try again."
             }
         }
     }

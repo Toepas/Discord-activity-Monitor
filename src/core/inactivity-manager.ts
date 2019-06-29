@@ -73,7 +73,7 @@ if (!module.parent)
     const { config } = loadConfig(configPath)
     const client = new LightClient(config)
     const inactivityManager = new InactivityManager(client)
-    client.initialize(config.token)
+    client.login(config.token)
         .then(async () =>
         {
             await inactivityManager.manageInactiveUsersInAllGuilds()
