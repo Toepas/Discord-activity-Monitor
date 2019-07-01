@@ -1,3 +1,4 @@
+import { GuildMember } from "discord.js";
 import { LightClient, loadConfig, Logger } from "disharmony";
 import Guild from "../models/guild";
 
@@ -26,34 +27,36 @@ export default class InactivityManager
         Logger.debugLog(`Managing inactives for guild ${guild.name}`)
         for (const member of guild.activeRole.members.values())
         {
-            // don't ask me why, sometimes member is null
+            // Don't ask me why, sometimes member is null
             if (!member)
-                return
+                continue
 
+            // If the member has the active role but isn't in the database, add them
             const now = new Date()
             if (!guild.users.get(member.id))
             {
-                guild.users.set(member.id, now) // if a user has the active role but isn't in the database, add them
+                guild.users.set(member.id, now)
                 Logger.debugLog(`User ${member.user.username} has active role but not found in database, adding new entry`)
+                continue
             }
-            else if (this.isInactiveBeyondThreshold(guild.users.get(member.id)!, now, guild.inactiveThresholdDays))
-            {
-                try
-                {
-                    await member.removeRole(guild.activeRole)
-                    if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
-                        await member.addRole(guild.inactiveRoleId)
-                    guild.users.delete(member.id)
-                    Logger.debugLog(`Updated now inactive user ${member.user.username}`)
-                }
-                catch (e)
-                {
-                    Logger.debugLogError(`Error switching user ${member.user.username} to inactive in guild ${guild.name}`, e)
-                }
-            }
+
+            // If the member is inactive, remove the active role and remove them from the database
+            const isMemberInactive = this.isInactiveBeyondThreshold(guild.users.get(member.id)!, now, guild.inactiveThresholdDays)
+            if (isMemberInactive)
+                await this.markMemberInactive(guild, member)
+                    .catch(e => Logger.debugLogError(`Error switching user ${member.user.username} to inactive in guild ${guild.name}`, e))
         }
 
         await guild.save()
+    }
+
+    private async markMemberInactive(guild: Guild, member: GuildMember)
+    {
+        await member.removeRole(guild.activeRole!)
+        if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
+            await member.addRole(guild.inactiveRoleId)
+        guild.users.delete(member.id)
+        Logger.debugLog(`Updated now inactive user ${member.user.username}`)
     }
 
     private isInactiveBeyondThreshold(lastActiveDate: Date, now: Date, thresholdDays: number): boolean
