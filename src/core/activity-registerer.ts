@@ -37,10 +37,11 @@ export default class ActivityRegisterer
     {
         try
         {
-            await member.addRole(guild.activeRoleId, `Activity detected in channel '${channelName}'`);
+            const reasonStr = `Activity detected in channel '${channelName}'`
+            await member.addRole(guild.activeRoleId, reasonStr);
 
             if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
-                await member.removeRole(guild.inactiveRoleId)
+                await member.removeRole(guild.inactiveRoleId, reasonStr)
         }
         catch (e)
         {
