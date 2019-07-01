@@ -1,4 +1,13 @@
 # Changelog
+## Unreleased
+### Added
+- Audit log reason messages when roles are added/removed
+
+### Fixed
+- Ignored users still having activity tracked, despite not receiving active role
+- Inactive member management sometimes terminating early
+- Setup not clearing previously saved ignored user/role IDs
+
 ## v4.0.0-b2
 ### Fixed
 - Ignored roles and user ids not saving
