@@ -18,24 +18,25 @@ export default class ActivityRegisterer
 
     private async registerActivity(guild: Guild, member: GuildMember, channelName: string)
     {
+        if (!member || !guild || member.id === this.client.botId)
+            return
+
         await guild.loadDocument()
-        if (guild
-            && member && member.id !== this.client.botId
-            && this.isGuildSetUp(guild))
-        {
-            guild.users.set(member.id, new Date())
-            await this.markActiveIfNotIgnored(guild, member, channelName)
-            await guild.save()
-        }
+        if (!this.isGuildSetUp(guild))
+            return
+
+        if (this.isMemberIgnored(guild, member))
+            return
+
+        guild.users.set(member.id, new Date())
+        await this.markMemberActive(guild, member, channelName)
+        await guild.save()
     }
 
-    private async markActiveIfNotIgnored(guild: Guild, member: GuildMember, channelName: string)
+    private async markMemberActive(guild: Guild, member: GuildMember, channelName: string)
     {
         try
         {
-            if (this.isMemberIgnored(guild, member))
-                return
-
             await member.djs.addRole(guild.activeRoleId, `Activity detected in ${channelName}.`);
 
             if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
