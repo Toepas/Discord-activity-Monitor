@@ -52,9 +52,10 @@ export default class InactivityManager
 
     private async markMemberInactive(guild: Guild, member: GuildMember)
     {
-        await member.removeRole(guild.activeRole!)
+        const reasonStr = `No activity detected within last ${guild.inactiveThresholdDays} days`
+        await member.removeRole(guild.activeRole!, reasonStr)
         if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
-            await member.addRole(guild.inactiveRoleId)
+            await member.addRole(guild.inactiveRoleId, reasonStr)
         guild.users.delete(member.id)
         Logger.debugLog(`Updated now inactive user ${member.user.username}`)
     }
