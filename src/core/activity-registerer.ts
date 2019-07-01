@@ -37,7 +37,7 @@ export default class ActivityRegisterer
     {
         try
         {
-            await member.djs.addRole(guild.activeRoleId, `Activity detected in ${channelName}.`);
+            await member.addRole(guild.activeRoleId, `Activity detected in channel '${channelName}'`);
 
             if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
                 await member.removeRole(guild.inactiveRoleId)
