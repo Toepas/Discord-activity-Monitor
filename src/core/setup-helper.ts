@@ -54,6 +54,8 @@ const steps = [
         message: "Please @mention any *members* or *roles* who are to be exempt from being marked/unmarked as active (or type 'none')",
         action: (answer: BotMessage, guild: Guild) =>
         {
+            guild.ignoredRoleIds = []
+            guild.ignoredUserIds = []
             if (answer.mentions.members.size > 0 || answer.mentions.roles.size > 0)
             {
                 answer.mentions.members.forEach(member => guild.ignoredUserIds.push(member.id));
