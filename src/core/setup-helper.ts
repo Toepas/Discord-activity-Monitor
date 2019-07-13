@@ -1,4 +1,4 @@
-import { BotMessage, IClient } from "disharmony";
+import { BotMessage, IClient, Question } from "disharmony";
 import Guild from "../models/guild";
 import Message from "../models/message";
 
@@ -54,6 +54,8 @@ const steps = [
         message: "Please @mention any *members* or *roles* who are to be exempt from being marked/unmarked as active (or type 'none')",
         action: (answer: BotMessage, guild: Guild) =>
         {
+            guild.ignoredRoleIds = []
+            guild.ignoredUserIds = []
             if (answer.mentions.members.size > 0 || answer.mentions.roles.size > 0)
             {
                 answer.mentions.members.forEach(member => guild.ignoredUserIds.push(member.id));
@@ -71,13 +73,14 @@ export default class SetupHelper
     {
         for (const step of steps)
         {
-            let question: string | undefined = step.message
-            while (question)
+            let queryStr: string | undefined = step.message
+            while (queryStr)
             {
-                const answer: BotMessage = await Message.ask(client, message.channelId, question, message.member, true)
-                question = step.action(answer, message.guild)
-                if (question)
-                    question += ". Please try again."
+                const question = new Question(client, message.channelId, queryStr, message.member, true)
+                const answer: BotMessage = await question.send() // TODO better handling for question errors (currently just caught by caller)
+                queryStr = step.action(answer, message.guild)
+                if (queryStr)
+                    queryStr += ". Please try again."
             }
         }
     }

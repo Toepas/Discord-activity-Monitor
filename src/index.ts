@@ -3,14 +3,15 @@ import { Client, forkWorkerClient, loadConfig, Logger } from "disharmony"
 import { resolve } from "path";
 import commands from "./commands"
 import ActivityRegisterer from "./core/activity-registerer";
+import GuildMember from "./models/guild-member";
 import Message from "./models/message";
 
 const { config, configPath, isLocalDb } = loadConfig()
 
 if (Cluster.isMaster)
 {
-    const client = new Client(commands, Message, config!)
-    client.initialize(config.token)
+    const client = new Client(commands, config!, Message, GuildMember)
+    client.login(config.token)
         .then(() =>
         {
             new ActivityRegisterer(client).startListening()

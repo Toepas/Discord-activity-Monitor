@@ -8,12 +8,15 @@ async function invoke(_: string[], message: Message, client: IClient)
 
     try
     {
+        Logger.logEvent("SetupInitiated")
         await setupHelper.walkThroughSetup(client, message)
         await message.guild.save()
+        Logger.logEvent("SetupCompleted")
         return "Setup complete!"
     }
     catch (e)
     {
+        Logger.logEvent("SetupRejected", { guildId: message.guild.id })
         throw new CommandRejection(`Error during setup for guild ${message.guild.name}.\n`)
     }
 }
