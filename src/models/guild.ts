@@ -56,7 +56,8 @@ export default class Guild extends BotGuild
     {
         this.record.ignoredUserIds = this.ignoredUserIds
         this.record.ignoredRoleIds = this.ignoredRoleIds
-        this.record.users = this._users ? [...this._users.entries()] : []
+        if (this._users)
+            this.record.users = [...this._users.entries()]
         return super.toRecord()
     }
 }
