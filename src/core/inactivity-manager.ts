@@ -24,7 +24,7 @@ export default class InactivityManager
         if (!guild.activeRole)
             return
 
-        Logger.debugLog(`Managing inactives for guild ${guild.name}`)
+        Logger.debugLog(`Managing inactives for guild ${guild.id}`)
         for (const djsMember of guild.activeRole.members.values())
         {
             const member = new GuildMember(djsMember)
@@ -40,7 +40,7 @@ export default class InactivityManager
             if (!guild.users.get(member.id))
             {
                 guild.users.set(member.id, now)
-                Logger.debugLog(`User ${member.username} has active role but not found in database, adding new entry`)
+                Logger.debugLog(`User ${member.id} has active role but not found in database, adding new entry`)
                 Logger.logEvent("FoundManuallyActiveMember", { guildId: guild.id })
                 continue
             }
@@ -51,8 +51,8 @@ export default class InactivityManager
                 await this.markMemberInactive(guild, member)
                     .catch(e =>
                     {
-                        Logger.debugLogError(`Error switching user ${member.username} to inactive in guild ${guild.name}`, e)
-                        Logger.logEvent("ErrorMarkingInactive", { guildId: guild.id, memberName: member.username })
+                        Logger.debugLogError(`Error switching user ${member.id} to inactive in guild ${guild.id}`, e)
+                        Logger.logEvent("ErrorMarkingInactive", { guildId: guild.id, memberId: member.id })
                     })
         }
 
@@ -66,7 +66,7 @@ export default class InactivityManager
         if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
             await member.addRole(guild.inactiveRoleId, reasonStr)
         guild.users.delete(member.id)
-        Logger.logEvent("MarkedMemberInactive", { memberName: member.username })
+        Logger.logEvent("MarkedMemberInactive", { memberName: member.id })
     }
 
     private isInactiveBeyondThreshold(lastActiveDate: Date, now: Date, thresholdDays: number): boolean

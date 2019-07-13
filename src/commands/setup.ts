@@ -17,7 +17,7 @@ async function invoke(_: string[], message: Message, client: IClient)
     catch (e)
     {
         Logger.logEvent("SetupRejected", { guildId: message.guild.id })
-        throw new CommandRejection(`Error during setup for guild ${message.guild.name}.\n`)
+        throw new CommandRejection(`Error during setup for guild ${message.guild.id}.\n`)
     }
 }
 
