@@ -2,6 +2,7 @@
 ## Unreleased
 ### Added
 - Audit log reason messages when roles are added/removed
+- Event logging for some key events
 
 ### Fixed
 - Ignored users still having activity tracked, despite not receiving active role

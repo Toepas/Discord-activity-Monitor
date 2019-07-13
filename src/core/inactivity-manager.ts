@@ -37,6 +37,7 @@ export default class InactivityManager
             {
                 guild.users.set(member.id, now)
                 Logger.debugLog(`User ${member.user.username} has active role but not found in database, adding new entry`)
+                Logger.logEvent("FoundManuallyActiveMember", { guildId: guild.id })
                 continue
             }
 
@@ -44,7 +45,11 @@ export default class InactivityManager
             const isMemberInactive = this.isInactiveBeyondThreshold(guild.users.get(member.id)!, now, guild.inactiveThresholdDays)
             if (isMemberInactive)
                 await this.markMemberInactive(guild, member)
-                    .catch(e => Logger.debugLogError(`Error switching user ${member.user.username} to inactive in guild ${guild.name}`, e))
+                    .catch(e =>
+                    {
+                        Logger.debugLogError(`Error switching user ${member.user.username} to inactive in guild ${guild.name}`, e)
+                        Logger.logEvent("ErrorMarkingInactive", { guildId: guild.id, memberName: member.user.username })
+                    })
         }
 
         await guild.save()
@@ -57,7 +62,7 @@ export default class InactivityManager
         if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
             await member.addRole(guild.inactiveRoleId, reasonStr)
         guild.users.delete(member.id)
-        Logger.debugLog(`Updated now inactive user ${member.user.username}`)
+        Logger.logEvent("MarkedMemberInactive", { memberName: member.user.username })
     }
 
     private isInactiveBeyondThreshold(lastActiveDate: Date, now: Date, thresholdDays: number): boolean
@@ -88,6 +93,7 @@ if (!module.parent)
         .catch(async err =>
         {
             await Logger.debugLogError("Error running the inactivity monitor", err)
+            await Logger.logEvent("ErrorStartingInactivityMonitor")
             process.exit(1)
         })
 }

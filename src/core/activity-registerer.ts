@@ -46,6 +46,7 @@ export default class ActivityRegisterer
         catch (e)
         {
             Logger.debugLogError(`Error marking user ${member.username} active in guild ${guild.name}.`, e)
+            Logger.logEvent("ErrorMarkingActive", { guildId: guild.id, memberName: member.username })
         }
     }
 
