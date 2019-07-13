@@ -31,6 +31,6 @@
     "typescript": "^3.4.1"
   },
   "dependencies": {
-    "disharmony": "^0.9.3"
+    "disharmony": "^1.0.0"
   }
 }
