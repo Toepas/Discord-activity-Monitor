@@ -1,4 +1,4 @@
-import { BotGuildMember, Client, Logger } from "disharmony";
+import { Client, Logger } from "disharmony";
 import Guild from "../models/guild";
 import GuildMember from "../models/guild-member";
 import Message from "../models/message";
@@ -25,7 +25,7 @@ export default class ActivityRegisterer
         if (!this.isGuildSetUp(guild))
             return
 
-        if (this.isMemberIgnored(guild, member))
+        if (guild.isMemberIgnored(member))
             return
 
         guild.users.set(member.id, new Date())
@@ -48,13 +48,6 @@ export default class ActivityRegisterer
             Logger.debugLogError(`Error marking user ${member.username} active in guild ${guild.name}.`, e)
             Logger.logEvent("ErrorMarkingActive", { guildId: guild.id, memberName: member.username })
         }
-    }
-
-    private isMemberIgnored(guild: Guild, member: BotGuildMember)
-    {
-        const isIgnoredUser = guild.ignoredUserIds.indexOf(member.id) >= 0
-        const hasIgnoredRole = guild.ignoredRoleIds.some(roleId => member.hasRole(roleId))
-        return isIgnoredUser || hasIgnoredRole
     }
 
     private isGuildSetUp(guild: Guild)

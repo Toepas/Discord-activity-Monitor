@@ -1,4 +1,4 @@
-import { BotGuild } from "disharmony"
+import { BotGuild, BotGuildMember } from "disharmony"
 
 export default class Guild extends BotGuild
 {
@@ -36,6 +36,13 @@ export default class Guild extends BotGuild
             (k, v) => blacklist.indexOf(k) < 0 ? v : undefined,
             "\t",
         )
+    }
+
+    public isMemberIgnored(member: BotGuildMember)
+    {
+        const isIgnoredIndividually = this.ignoredUserIds.indexOf(member.id) >= 0
+        const hasIgnoredRole = this.ignoredRoleIds.some(roleId => member.hasRole(roleId))
+        return isIgnoredIndividually || hasIgnoredRole
     }
 
     public loadRecord(record: any)

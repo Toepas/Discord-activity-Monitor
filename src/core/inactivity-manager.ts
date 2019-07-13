@@ -1,6 +1,6 @@
-import { GuildMember } from "discord.js";
 import { LightClient, loadConfig, Logger } from "disharmony";
 import Guild from "../models/guild";
+import GuildMember from "../models/guild-member";
 
 export default class InactivityManager
 {
@@ -25,10 +25,14 @@ export default class InactivityManager
             return
 
         Logger.debugLog(`Managing inactives for guild ${guild.name}`)
-        for (const member of guild.activeRole.members.values())
+        for (const djsMember of guild.activeRole.members.values())
         {
+            const member = new GuildMember(djsMember)
             // Don't ask me why, sometimes member is null
             if (!member)
+                continue
+
+            if (guild.isMemberIgnored(member))
                 continue
 
             // If the member has the active role but isn't in the database, add them
@@ -36,7 +40,7 @@ export default class InactivityManager
             if (!guild.users.get(member.id))
             {
                 guild.users.set(member.id, now)
-                Logger.debugLog(`User ${member.user.username} has active role but not found in database, adding new entry`)
+                Logger.debugLog(`User ${member.username} has active role but not found in database, adding new entry`)
                 Logger.logEvent("FoundManuallyActiveMember", { guildId: guild.id })
                 continue
             }
@@ -47,8 +51,8 @@ export default class InactivityManager
                 await this.markMemberInactive(guild, member)
                     .catch(e =>
                     {
-                        Logger.debugLogError(`Error switching user ${member.user.username} to inactive in guild ${guild.name}`, e)
-                        Logger.logEvent("ErrorMarkingInactive", { guildId: guild.id, memberName: member.user.username })
+                        Logger.debugLogError(`Error switching user ${member.username} to inactive in guild ${guild.name}`, e)
+                        Logger.logEvent("ErrorMarkingInactive", { guildId: guild.id, memberName: member.username })
                     })
         }
 
@@ -62,7 +66,7 @@ export default class InactivityManager
         if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
             await member.addRole(guild.inactiveRoleId, reasonStr)
         guild.users.delete(member.id)
-        Logger.logEvent("MarkedMemberInactive", { memberName: member.user.username })
+        Logger.logEvent("MarkedMemberInactive", { memberName: member.username })
     }
 
     private isInactiveBeyondThreshold(lastActiveDate: Date, now: Date, thresholdDays: number): boolean
