@@ -40,13 +40,16 @@ export default class ActivityRegisterer
             const reasonStr = `Activity detected in channel '${channelName}'`
             await member.addRole(guild.activeRoleId, reasonStr);
 
-            if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
+            const hasInactiveRole = guild.inactiveRoleId && guild.inactiveRoleId !== "disabled"
+            if (hasInactiveRole)
                 await member.removeRole(guild.inactiveRoleId, reasonStr)
+
+            Logger.logEvent("MarkedMemberActive", { guildId: guild.id, hasInactiveRole })
         }
         catch (e)
         {
             Logger.debugLogError(`Error marking user ${member.id} active in guild ${guild.id}.`, e)
-            Logger.logEvent("ErrorMarkingActive", { guildId: guild.id, memberId: member.id })
+            Logger.logEvent("ErrorMarkingMemberActive", { guildId: guild.id, memberId: member.id })
         }
     }
 
