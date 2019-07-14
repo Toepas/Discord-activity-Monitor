@@ -24,7 +24,7 @@
     "full-start": "npm install && npm run build && npm start"
   },
   "types": "dist/index.d.ts",
-  "version": "4.0.0-b2",
+  "version": "4.0.0",
   "devDependencies": {
     "@types/node": "^11.13.0",
     "tslint": "^5.16.0",
