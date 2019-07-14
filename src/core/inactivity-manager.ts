@@ -41,7 +41,7 @@ export default class InactivityManager
             {
                 guild.users.set(member.id, now)
                 Logger.debugLog(`User ${member.id} has active role but not found in database, adding new entry`)
-                Logger.logEvent("FoundManuallyActiveMember", { guildId: guild.id })
+                Logger.logEvent("FoundManuallyActiveMember", { guildId: guild.id, memberId: member.id })
                 continue
             }
 
@@ -66,7 +66,7 @@ export default class InactivityManager
         if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
             await member.addRole(guild.inactiveRoleId, reasonStr)
         guild.users.delete(member.id)
-        Logger.logEvent("MarkedMemberInactive", { memberName: member.id })
+        Logger.logEvent("MarkedMemberInactive", { guildId: guild.id, memberId: member.id })
     }
 
     private isInactiveBeyondThreshold(lastActiveDate: Date, now: Date, thresholdDays: number): boolean
