@@ -6,13 +6,11 @@
         "moduleResolution": "node",
         "outDir": "dist",
         "rootDir": "src",
-        "sourceMap": true,
         "strict": true,
         "strictPropertyInitialization": false,
         "target": "es2018"
     },
-    "exclude": [
-        "./dist/**/*",
-        "./test-runner.ts"
+    "include": [
+        "./src/**/*",
     ]
 }
