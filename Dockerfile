@@ -1,10 +1,14 @@
 FROM node:10
 
-COPY ./ /src/app
+WORKDIR /app
 
-WORKDIR /src/app
+COPY src/ ./src/
+COPY package*.json tsconfig.json config.json ./
 
 RUN npm install --production
 RUN npm run build
+
+ENV TOKEN ""
+ENV DB_STRING "nedb://nedb-data"
 
 CMD npm start
