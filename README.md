@@ -20,7 +20,8 @@ A Discord bot to assign/remove a role from users in your guild based on whether 
 ## Getting started
 ### Invite
 - By using this bot you agree to the terms laid out in the [Privacy & Terms](./docs/privacy-and-terms.md) document
-- If you agree, use my [public invite](https://discordapp.com/oauth2/authorize?client_id=575115003875688448&scope=bot&permissions=268454912) to invite the bot to your server
+- If you agree, you can use my [public invite](https://discordapp.com/oauth2/authorize?client_id=575115003875688448&scope=bot&permissions=268454912) to invite the bot to your server
+- See the [self hosting section](#self-hosting) for details on running on your own server
 
 ### Setup
 **Admin only**
@@ -35,7 +36,7 @@ Setup requires administrator permission in the Discord server
 - You can view your guild settings with `@Activity Monitor view-config`
 
 Example:  
-![example](https://i.imgur.com/CHqCEc2.png)
+![Example setup](https://user-images.githubusercontent.com/14295333/61799425-01468d00-ae23-11e9-9e88-604eaa033a24.png)
 
 ### Permissions
 
@@ -58,6 +59,19 @@ Each permission has a reason for being required, explained below.
 
 **Note for git users**  
 If you cloned the repository with git, make sure you `git reset --hard vX.Y` to a specific version, as latest master isn't always production ready!
+
+### Database
+- Out of the box the project uses [NeDB](https://github.com/louischatriot/nedb/) as a local database, storing the data in *./nedb-data*
+- Both [NeDB](https://github.com/louischatriot/nedb/) and [MongoDB](https://www.mongodb.com) are supported
+- Edit the connection string in [config.json](./config.json) or by setting the *DB_STRING* environment variable
+
+### Docker
+`docker run -v /path/to/logs:/app/logs -v /path/to/data:/app/nedb-data -e TOKEN="your-token-here" -e DB_STRING="your-db-string-here" benji7425/discord-activity-monitor`
+
+- **Due to limitations with volume mounting cross-OS you cannost use a Windows host with the inbuilt NeDB database**
+- View the image on Docker Hub [here](https://hub.docker.com/r/benji7425/discord-activity-monitor)
+- You can omit the *DB_STRING* environment variable if using the default local *nedb-data* database
+- You can omit the *nedb-data* volume mount if connecting to a MongoDB instance
 
 ## Need help?
 
