@@ -51,8 +51,9 @@ export default class InactivityManager
                 await this.markMemberInactive(guild, member)
                     .catch(e =>
                     {
-                        Logger.debugLogError(`Error switching user ${member.id} to inactive in guild ${guild.id}`, e)
-                        Logger.logEvent("ErrorMarkingInactive", { guildId: guild.id, memberId: member.id })
+                        if (e.code !== 50013)
+                            Logger.debugLogError(`Error switching user ${member.id} to inactive in guild ${guild.id}`, e)
+                        Logger.logEvent("ErrorMarkingInactive", { guildId: guild.id, memberId: member.id, code: e.code })
                     })
         }
 

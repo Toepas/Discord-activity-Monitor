@@ -41,15 +41,20 @@ export default class ActivityRegisterer
             await member.addRole(guild.activeRoleId, reasonStr);
 
             const hasInactiveRole = guild.inactiveRoleId && guild.inactiveRoleId !== "disabled"
+            let didRemoveInactiveRole = false
             if (hasInactiveRole)
+            {
                 await member.removeRole(guild.inactiveRoleId, reasonStr)
+                didRemoveInactiveRole = true
+            }
 
-            Logger.logEvent("MarkedMemberActive", { guildId: guild.id, hasInactiveRole })
+            Logger.logEvent("MarkedMemberActive", { guildId: guild.id, removedInactiveRole: didRemoveInactiveRole })
         }
         catch (e)
         {
-            Logger.debugLogError(`Error marking user ${member.id} active in guild ${guild.id}.`, e)
-            Logger.logEvent("ErrorMarkingMemberActive", { guildId: guild.id, memberId: member.id })
+            if (e.code !== 50013)
+                Logger.debugLogError(`Error marking user ${member.id} active in guild ${guild.id}.`, e)
+            Logger.logEvent("ErrorMarkingMemberActive", { guildId: guild.id, memberId: member.id, code: e.code })
         }
     }
 
