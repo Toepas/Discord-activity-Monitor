@@ -5,7 +5,7 @@ WORKDIR /app
 COPY src/ ./src/
 COPY package*.json tsconfig.json config.json ./
 
-RUN npm install --production
+RUN npm ci
 RUN npm run build
 
 ENV TOKEN ""

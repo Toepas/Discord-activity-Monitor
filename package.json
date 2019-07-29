@@ -21,7 +21,7 @@
     "start": "node ./dist/index.js --name activity-monitor",
     "build": "./node_modules/.bin/tsc",
     "lint": "./node_modules/.bin/tslint --project .",
-    "full-start": "npm install --production && npm run build && npm start"
+    "full-start": "npm ci && npm run build && npm start"
   },
   "types": "dist/index.d.ts",
   "version": "4.0.1",
