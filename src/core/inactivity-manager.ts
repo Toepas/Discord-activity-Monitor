@@ -19,20 +19,20 @@ export default class InactivityManager
             return
 
         const guild = new Guild(djsGuild)
+        if (!guild.botHasPermissions(this.client.config.requiredPermissions))
+            return
+
         await guild.loadDocument()
 
-        if (!guild.activeRole)
+        if (!guild.isActiveRoleConfigured())
             return
 
         Logger.debugLog(`Managing inactives for guild ${guild.id}`)
-        for (const djsMember of guild.activeRole.members.values())
+        for (const djsMember of guild.activeRole!.members.values())
         {
             const member = new GuildMember(djsMember)
-            // Don't ask me why, sometimes member is null
-            if (!member)
-                continue
 
-            if (guild.isMemberIgnored(member))
+            if (!member || guild.isMemberIgnored(member)) // Don't ask me why, sometimes member is null
                 continue
 
             // If the member has the active role but isn't in the database, add them
@@ -64,8 +64,10 @@ export default class InactivityManager
     {
         const reasonStr = `No activity detected within last ${guild.inactiveThresholdDays} days`
         await member.removeRole(guild.activeRole!, reasonStr)
-        if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
+
+        if (guild.isInactiveRoleConfigured())
             await member.addRole(guild.inactiveRoleId, reasonStr)
+
         guild.users.delete(member.id)
         Logger.logEvent("MarkedMemberInactive", { guildId: guild.id, memberId: member.id })
     }
@@ -84,7 +86,7 @@ export default class InactivityManager
 if (!module.parent)
 {
     const configPath = process.argv[2]
-    const { config } = loadConfig(configPath)
+    const { config } = loadConfig(undefined, configPath)
     const client = new LightClient(config)
     const inactivityManager = new InactivityManager(client)
     client.login(config.token)

@@ -1,3 +1,4 @@
+import { Role } from "discord.js"
 import { BotGuild, BotGuildMember } from "disharmony"
 
 export default class Guild extends BotGuild
@@ -11,6 +12,7 @@ export default class Guild extends BotGuild
     public set activeRoleId(value: string) { this.record.activeRoleId = value }
 
     public get activeRole() { return this.djs.roles.get(this.activeRoleId) }
+    public get inactiveRole() { return this.djs.roles.get(this.inactiveRoleId) }
 
     public get inactiveRoleId(): string { return this.record.inactiveRoleId || "" }
     public set inactiveRoleId(value: string) { this.record.inactiveRoleId = value }
@@ -43,6 +45,29 @@ export default class Guild extends BotGuild
         const isIgnoredIndividually = this.ignoredUserIds.indexOf(member.id) >= 0
         const hasIgnoredRole = this.ignoredRoleIds.some(roleId => member.hasRole(roleId))
         return isIgnoredIndividually || hasIgnoredRole
+    }
+
+    public canBotManageRole(targetRole: Role)
+    {
+        return this.me.djs.roles.find(role =>
+            role.position > targetRole.position // Bot has a role higher than the target role...
+            && role.hasPermission("MANAGE_ROLES")) // ...which has the permission to manage other roles
+    }
+
+    public isActiveRoleConfigured()
+    {
+        return this.activeRoleId // Guild is configured with an active role
+            && this.activeRoleId.length > 0 // Configured active role is valid snowflake
+            && this.activeRole // Configured snowflake corresponds to a valid role
+            && this.canBotManageRole(this.activeRole) // Role hierarchy is configured to allow the bot to manage this role
+    }
+
+    public isInactiveRoleConfigured()
+    {
+        return this.inactiveRoleId // Guild is configured with an inactive role
+            && this.inactiveRoleId.length > 0 // Configured inactive role is valid snowflake
+            && this.inactiveRole // Configured snowflake corresponds to a valid role
+            && this.canBotManageRole(this.inactiveRole) // Role hierarchy is configured to allow the bot to manage this role
     }
 
     public loadRecord(record: any)
