@@ -3,7 +3,17 @@
   "bugs": {
     "url": "https://github.com/benji7425/discord-activity-monitor/issues"
   },
+  "dependencies": {
+    "@types/node": "^11.13.0",
+    "disharmony": "^1.0.4",
+    "typescript": "^3.4.1"
+  },
   "description": "Discord bot to add/remove roles based on user activity",
+  "devDependencies": {
+    "alsatian": "^2.4.0",
+    "tslint": "^5.16.0",
+    "typemoq": "^2.1.0"
+  },
   "files": [
     "/dist",
     "!*.map",
@@ -18,19 +28,13 @@
     "url": "git+https://github.com/benji7425/discord-activity-monitor.git"
   },
   "scripts": {
-    "start": "node ./dist/index.js --name activity-monitor",
-    "build": "./node_modules/.bin/tsc",
+    "build": "./node_modules/.bin/tsc --project tsconfig.prod.json",
+    "build-test": "./node_modules/.bin/tsc --project tsconfig.json && npm test",
+    "full-start": "npm ci && npm run build && npm start",
     "lint": "./node_modules/.bin/tslint --project .",
-    "full-start": "npm ci && npm run build && npm start"
+    "start": "node ./dist/index.js --name activity-monitor",
+    "test": "node --stack-trace-limit=1 ./test-runner.js"
   },
   "types": "dist/index.d.ts",
-  "version": "4.0.1",
-  "devDependencies": {
-    "tslint": "^5.16.0"
-  },
-  "dependencies": {
-    "@types/node": "^11.13.0",
-    "disharmony": "^1.0.3",
-    "typescript": "^3.4.1"
-  }
+  "version": "4.0.1"
 }

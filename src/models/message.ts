@@ -1,7 +1,7 @@
 import { Message as DjsMessage, TextChannel } from "discord.js"
 import { BotMessage } from "disharmony"
-import Guild from "./guild";
-import GuildMember from "./guild-member";
+import Guild from "./guild"
+import GuildMember from "./guild-member"
 
 export default class Message extends BotMessage
 {

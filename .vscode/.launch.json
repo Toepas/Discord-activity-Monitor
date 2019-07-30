@@ -15,6 +15,15 @@
             "preLaunchTask": "build",
             "autoAttachChildProcesses": true,
             "console": "internalConsole"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug tests",
+            "program": "${workspaceFolder}/test-runner.js",
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ]
         }
     ]
 }

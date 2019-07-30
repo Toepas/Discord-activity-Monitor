@@ -1,5 +1,5 @@
 import { Command, PermissionLevel } from "disharmony"
-import Message from "../models/message";
+import Message from "../models/message"
 
 async function invoke(_: string[], message: Message)
 {

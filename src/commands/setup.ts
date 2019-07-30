@@ -1,6 +1,6 @@
 import { Command, CommandRejection, IClient, Logger, PermissionLevel } from "disharmony"
-import SetupHelper from "../core/setup-helper";
-import Message from "../models/message";
+import SetupHelper from "../core/setup-helper"
+import Message from "../models/message"
 
 async function invoke(_: string[], message: Message, client: IClient)
 {

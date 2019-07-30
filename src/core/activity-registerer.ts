@@ -1,7 +1,7 @@
-import { Client, Logger } from "disharmony";
-import Guild from "../models/guild";
-import GuildMember from "../models/guild-member";
-import Message from "../models/message";
+import { Client, Logger } from "disharmony"
+import Guild from "../models/guild"
+import GuildMember from "../models/guild-member"
+import Message from "../models/message"
 
 export default class ActivityRegisterer
 {
@@ -38,7 +38,7 @@ export default class ActivityRegisterer
         try
         {
             const reasonStr = `Activity detected in channel '${channelName}'`
-            await member.addRole(guild.activeRoleId, reasonStr);
+            await member.addRole(guild.activeRoleId, reasonStr)
 
             const hasInactiveRole = guild.inactiveRoleId && guild.inactiveRoleId !== "disabled"
             let didRemoveInactiveRole = false

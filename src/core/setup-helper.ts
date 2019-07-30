@@ -1,41 +1,41 @@
-import { BotMessage, IClient, Question } from "disharmony";
-import Guild from "../models/guild";
-import Message from "../models/message";
+import { BotMessage, IClient, Question } from "disharmony"
+import Guild from "../models/guild"
+import Message from "../models/message"
 
 const steps = [
     {
         message: "How many days would you like to set the inactive threshold at?",
         action: (answer: BotMessage, guild: Guild) =>
         {
-            // expect the message to be an integer value
-            const response = parseInt(answer.content, 10);
+            // Expect the message to be an integer value
+            const response = parseInt(answer.content, 10)
             if (response && response > 0)
-                guild.inactiveThresholdDays = response;
+                guild.inactiveThresholdDays = response
             else
-                return "Value must be a whole number of days greater than 0";
+                return "Value must be a whole number of days greater than 0"
         },
     },
     {
         message: "Please @mention the role you wish to use to indicate an *active* user",
         action: (answer: BotMessage, guild: Guild) =>
         {
-            // expect the message to be in the format @<snowflake>
+            // Expect the message to be in the format @<snowflake>
             if (answer.mentions.roles.size > 0)
-                guild.activeRoleId = answer.mentions.roles.first().id;
+                guild.activeRoleId = answer.mentions.roles.first().id
             else
-                return "You must @mention an existing role";
+                return "You must @mention an existing role"
         },
     },
     {
         message: "Would you like the bot to *add* people to this role if they send a message and *don't* already have it? (yes/no)",
         action: (answer: BotMessage, guild: Guild) =>
         {
-            // expect the message to be "yes" or "no"
-            const msg = answer.content.toLowerCase();
+            // Expect the message to be "yes" or "no"
+            const msg = answer.content.toLowerCase()
             if (msg === "yes" || msg === "no")
-                guild.allowRoleAddition = msg === "yes";
+                guild.allowRoleAddition = msg === "yes"
             else
-                return "Please respond with either 'yes' or 'no'";
+                return "Please respond with either 'yes' or 'no'"
         },
     },
     {
@@ -43,11 +43,11 @@ const steps = [
         action: (answer: BotMessage, guild: Guild) =>
         {
             if (answer.mentions.roles.size > 0)
-                guild.inactiveRoleId = answer.mentions.roles.first().id;
+                guild.inactiveRoleId = answer.mentions.roles.first().id
             else if (answer.content.toLowerCase() === "disable")
-                guild.inactiveRoleId = "disabled";
+                guild.inactiveRoleId = "disabled"
             else
-                return "Please @mention a role or say 'disable'";
+                return "Please @mention a role or say 'disable'"
         },
     },
     {
@@ -58,11 +58,11 @@ const steps = [
             guild.ignoredUserIds = []
             if (answer.mentions.members.size > 0 || answer.mentions.roles.size > 0)
             {
-                answer.mentions.members.forEach(member => guild.ignoredUserIds.push(member.id));
-                answer.mentions.roles.forEach(role => guild.ignoredRoleIds.push(role.id));
+                answer.mentions.members.forEach(member => guild.ignoredUserIds.push(member.id))
+                answer.mentions.roles.forEach(role => guild.ignoredRoleIds.push(role.id))
             }
             else if (answer.content.toLowerCase() !== "none")
-                return "Please either @mention some members or type 'none'";
+                return "Please either @mention some members or type 'none'"
         },
     },
 ]

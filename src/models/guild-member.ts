@@ -1,4 +1,4 @@
-import { BotGuildMember } from "disharmony";
+import { BotGuildMember } from "disharmony"
 
 export default class GuildMember extends BotGuildMember
 {

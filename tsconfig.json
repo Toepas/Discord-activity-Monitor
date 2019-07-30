@@ -4,6 +4,8 @@
         "experimentalDecorators": true,
         "module": "commonjs",
         "moduleResolution": "node",
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "outDir": "dist",
         "rootDir": "src",
         "strict": true,
@@ -11,6 +13,6 @@
         "target": "es2018"
     },
     "include": [
-        "./src/**/*",
+        "./src/**/*.ts"
     ]
 }

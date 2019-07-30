@@ -1,6 +1,6 @@
-import { LightClient, loadConfig, Logger } from "disharmony";
-import Guild from "../models/guild";
-import GuildMember from "../models/guild-member";
+import { LightClient, loadConfig, Logger } from "disharmony"
+import Guild from "../models/guild"
+import GuildMember from "../models/guild-member"
 
 export default class InactivityManager
 {

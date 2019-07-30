@@ -5,7 +5,7 @@
     "tasks": [
         {
             "label": "build",
-            "command": "./node_modules/.bin/tsc",
+            "command": "./node_modules/.bin/tsc --sourceMap",
             "problemMatcher": "$tsc",
             "group": {
                 "kind": "build",
@@ -19,7 +19,7 @@
         },
         {
             "label": "watch",
-            "command": "./node_modules/.bin/tsc -w",
+            "command": "./node_modules/.bin/tsc --sourceMap --watch",
             "problemMatcher": "$tsc-watch",
             "type": "shell",
             "presentation": {
@@ -30,7 +30,7 @@
         {
             "label": "test",
             "type": "shell",
-            "command": "npm run test",
+            "command": "npm test",
             "group": {
                 "kind": "test",
                 "isDefault": true
