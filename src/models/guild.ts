@@ -30,7 +30,7 @@ export default class Guild extends BotGuild
     public ignoredUserIds: string[]
     public ignoredRoleIds: string[]
 
-    public getConfigJson()
+    public getConfigJson(): string
     {
         const blacklist = ["id", "_id", "users"]
         return JSON.stringify(
@@ -40,44 +40,46 @@ export default class Guild extends BotGuild
         )
     }
 
-    public isMemberIgnored(member: BotGuildMember)
+    public isMemberIgnored(member: BotGuildMember): boolean
     {
         const isIgnoredIndividually = this.ignoredUserIds.indexOf(member.id) >= 0
         const hasIgnoredRole = this.ignoredRoleIds.some(roleId => member.hasRole(roleId))
         return isIgnoredIndividually || hasIgnoredRole
     }
 
-    public canBotManageRole(targetRole: Role)
+    public canBotManageRole(targetRole: Role): boolean
     {
-        return this.me.djs.roles.find(role =>
+        return !!this.me.djs.roles.find(role =>
             role.position > targetRole.position // Bot has a role higher than the target role...
             && role.hasPermission("MANAGE_ROLES")) // ...which has the permission to manage other roles
     }
 
-    public isActiveRoleConfigured()
+    public isActiveRoleConfigured(): boolean
     {
-        return this.activeRoleId // Guild is configured with an active role
+        return (this.activeRoleId // Guild is configured with an active role
             && this.activeRoleId.length > 0 // Configured active role is valid snowflake
             && this.activeRole // Configured snowflake corresponds to a valid role
             && this.canBotManageRole(this.activeRole) // Role hierarchy is configured to allow the bot to manage this role
+        ) as boolean
     }
 
-    public isInactiveRoleConfigured()
+    public isInactiveRoleConfigured(): boolean
     {
-        return this.inactiveRoleId // Guild is configured with an inactive role
+        return (this.inactiveRoleId // Guild is configured with an inactive role
             && this.inactiveRoleId.length > 0 // Configured inactive role is valid snowflake
-            && this.inactiveRole // Configured snowflake corresponds to a valid role
+            && !!this.inactiveRole // Configured snowflake corresponds to a valid role
             && this.canBotManageRole(this.inactiveRole) // Role hierarchy is configured to allow the bot to manage this role
+        ) as boolean
     }
 
-    public loadRecord(record: any)
+    public loadRecord(record: any): void
     {
         this.ignoredUserIds = record.ignoredUserIds || []
         this.ignoredRoleIds = record.ignoredRoleIds || []
         return super.loadRecord(record)
     }
 
-    public toRecord()
+    public toRecord(): any
     {
         this.record.ignoredUserIds = this.ignoredUserIds
         this.record.ignoredRoleIds = this.ignoredRoleIds

@@ -17,7 +17,7 @@ export default class ActivityRegisterer
                 args.newMember.voiceChannelName || args.oldMember.voiceChannelName))
     }
 
-    private async registerActivity(guild: Guild, member: GuildMember, channelName: string)
+    public async registerActivity(guild: Guild, member: GuildMember, channelName: string, date?: Date)
     {
         // Exit if...
         if (!member || !guild                                                   // ...either of the parameters are null
@@ -35,7 +35,7 @@ export default class ActivityRegisterer
             return
 
         // Update the user's role and database entry
-        guild.users.set(member.id, new Date())
+        guild.users.set(member.id, date || new Date())
         await this.markMemberActive(guild, member, channelName)
         await guild.save()
     }
