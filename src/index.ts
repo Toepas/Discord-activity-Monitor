@@ -4,7 +4,7 @@ import { Client, forkWorkerClient, loadConfig, Logger } from "disharmony"
 import { resolve } from "path"
 import commands from "./commands"
 import ActivityRegisterer from "./core/activity-registerer"
-import ActivityMonitorConfig from "./models/activity-monitor-config";
+import ActivityMonitorConfig from "./models/activity-monitor-config"
 import GuildMember from "./models/guild-member"
 import Message from "./models/message"
 
