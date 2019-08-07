@@ -4,8 +4,10 @@
     "url": "https://github.com/benji7425/discord-activity-monitor/issues"
   },
   "dependencies": {
+    "@hapi/joi": "^15.1.0",
+    "@types/hapi__joi": "^15.0.3",
     "@types/node": "^11.13.0",
-    "disharmony": "^1.0.4",
+    "disharmony": "^1.1.0",
     "typescript": "^3.4.1"
   },
   "description": "Discord bot to add/remove roles based on user activity",

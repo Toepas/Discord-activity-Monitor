@@ -1,4 +1,5 @@
 import { Client, Logger } from "disharmony"
+import ActivityMonitorConfig from "../models/activity-monitor-config"
 import Guild from "../models/guild"
 import GuildMember from "../models/guild-member"
 import Message from "../models/message"
@@ -16,19 +17,26 @@ export default class ActivityRegisterer
                 args.newMember.voiceChannelName || args.oldMember.voiceChannelName))
     }
 
-    private async registerActivity(guild: Guild, member: GuildMember, channelName: string)
+    public async registerActivity(guild: Guild, member: GuildMember, channelName: string, date?: Date)
     {
-        if (!member || !guild || member.id === this.client.botId)
+        // Exit if...
+        if (!member || !guild                                                   // ...either of the parameters are null
+            || member.id === this.client.botId                                  // ...the message is from self
+            || !guild.botHasPermissions(this.client.config.requiredPermissions))   // ...the bot does not have the required permissions in this guild
             return
 
+        // Load the document in order to be able to process following checks
         await guild.loadDocument()
-        if (!this.isGuildSetUp(guild))
+
+        // Exit if...
+        if (!guild.allowRoleAddition                // ...the guild does not allow role additon
+            || guild.isMemberIgnored(member)        // ...the member is ignored in this guild
+            || !guild.isActiveRoleConfigured()       // ...the active role is not configured in this guild
+            || guild.isActiveRoleBadlyConfigured()) // ...the active role is badly configured in this guild
             return
 
-        if (guild.isMemberIgnored(member))
-            return
-
-        guild.users.set(member.id, new Date())
+        // Update the user's role and database entry
+        guild.users.set(member.id, date || new Date())
         await this.markMemberActive(guild, member, channelName)
         await guild.save()
     }
@@ -58,12 +66,7 @@ export default class ActivityRegisterer
         }
     }
 
-    private isGuildSetUp(guild: Guild)
-    {
-        return guild.allowRoleAddition && guild.activeRoleId && guild.activeRoleId.length > 0
-    }
-
     constructor(
-        private client: Client<Message, GuildMember>,
+        private client: Client<Message, GuildMember, ActivityMonitorConfig>,
     ) { }
 }

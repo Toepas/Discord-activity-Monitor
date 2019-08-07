@@ -1,12 +1,15 @@
+import * as Joi from "@hapi/joi"
 import * as Cluster from "cluster"
 import { Client, forkWorkerClient, loadConfig, Logger } from "disharmony"
 import { resolve } from "path"
 import commands from "./commands"
 import ActivityRegisterer from "./core/activity-registerer"
+import ActivityMonitorConfig from "./models/activity-monitor-config";
 import GuildMember from "./models/guild-member"
 import Message from "./models/message"
 
-const { config, configPath, isLocalDb } = loadConfig()
+const configSchema = Joi.object().keys({ cullingIntervalSec: Joi.number().required() })
+const { config, configPath, isLocalDb } = loadConfig<ActivityMonitorConfig>(configSchema)
 
 if (Cluster.isMaster)
 {
@@ -15,7 +18,7 @@ if (Cluster.isMaster)
         .then(() =>
         {
             new ActivityRegisterer(client).startListening()
-            setInterval(runInactivityManager, 24 * 60 * 60 * 1000, client, !isLocalDb)
+            setInterval(runInactivityManager, config.cullingIntervalSec * 1000, client, !isLocalDb)
             runInactivityManager(client, !isLocalDb)
                 .catch(err => Logger.debugLogError("Error running inactivity monitor for the first time. It is likely that subsequent executions will also error.", err))
         })

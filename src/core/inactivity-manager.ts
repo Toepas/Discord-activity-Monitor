@@ -7,36 +7,31 @@ export default class InactivityManager
     public async manageInactiveUsersInAllGuilds()
     {
         await Logger.debugLog("Beginning guild iteration to manage inactive users")
-        for (const guild of this.client.djs.guilds.values())
-            await this.manageInactiveUsersInGuild(guild.id)
+        for (const djsGuild of this.client.djs.guilds.values())
+            await this.manageInactiveUsersInGuild(new Guild(djsGuild))
         await Logger.debugLog("Guilds iteration complete")
     }
 
-    public async manageInactiveUsersInGuild(guildId: string)
+    public async manageInactiveUsersInGuild(guild: Guild, now?: Date)
     {
-        const djsGuild = this.client.djs.guilds.get(guildId)
-        if (!djsGuild)
+        if (!guild.botHasPermissions(this.client.config.requiredPermissions))
             return
 
-        const guild = new Guild(djsGuild)
         await guild.loadDocument()
 
-        if (!guild.activeRole)
+        if (guild.isActiveRoleBadlyConfigured())
             return
 
         Logger.debugLog(`Managing inactives for guild ${guild.id}`)
-        for (const djsMember of guild.activeRole.members.values())
+        for (const djsMember of guild.activeRole!.members.values())
         {
             const member = new GuildMember(djsMember)
-            // Don't ask me why, sometimes member is null
-            if (!member)
-                continue
 
-            if (guild.isMemberIgnored(member))
+            if (!member || guild.isMemberIgnored(member)) // Don't ask me why, sometimes member is null
                 continue
 
             // If the member has the active role but isn't in the database, add them
-            const now = new Date()
+            now = now || new Date()
             if (!guild.users.get(member.id))
             {
                 guild.users.set(member.id, now)
@@ -63,9 +58,11 @@ export default class InactivityManager
     private async markMemberInactive(guild: Guild, member: GuildMember)
     {
         const reasonStr = `No activity detected within last ${guild.inactiveThresholdDays} days`
-        await member.removeRole(guild.activeRole!, reasonStr)
-        if (guild.inactiveRoleId && guild.inactiveRoleId !== "disabled")
+        await member.removeRole(guild.activeRole!.id, reasonStr)
+
+        if (guild.isInactiveRoleConfigured() && !guild.isInactiveRoleBadlyConfigured())
             await member.addRole(guild.inactiveRoleId, reasonStr)
+
         guild.users.delete(member.id)
         Logger.logEvent("MarkedMemberInactive", { guildId: guild.id, memberId: member.id })
     }
@@ -84,7 +81,7 @@ export default class InactivityManager
 if (!module.parent)
 {
     const configPath = process.argv[2]
-    const { config } = loadConfig(configPath)
+    const { config } = loadConfig(undefined, configPath)
     const client = new LightClient(config)
     const inactivityManager = new InactivityManager(client)
     client.login(config.token)
