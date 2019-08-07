@@ -38,7 +38,7 @@ export class InactivityManagerTestFixture
 
         this.guild = Mock.ofType<Guild>()
         this.guild.setup(x => x.botHasPermissions(It.isAny())).returns(() => true)
-        this.guild.setup(x => x.isActiveRoleConfigured()).returns(() => true)
+        this.guild.setup(x => x.isActiveRoleBadlyConfigured()).returns(() => false)
         this.guild.setup(x => x.isMemberIgnored(It.isAny())).returns(() => false)
         this.guild.setup(x => x.users).returns(() => this.guildUsers)
         this.guild.setup(x => x.activeRole).returns(() => this.activeRole.object)
@@ -162,7 +162,7 @@ export class InactivityManagerTestFixture
     }
 
     @AsyncTest()
-    public async inactive_role_added_when_active_role_removed_if_configured_in_guild()
+    public async inactive_role_added_when_active_role_removed_if_inactive_role_well_configured()
     {
         // ARRANGE
         const now = new Date(2000, 1, 10)
@@ -173,6 +173,7 @@ export class InactivityManagerTestFixture
         this.guild.setup(x => x.inactiveRole).returns(() => inactiveRole.object)
         this.guild.setup(x => x.inactiveRoleId).returns(() => "inactive-role")
         this.guild.setup(x => x.isInactiveRoleConfigured()).returns(() => true)
+        this.guild.setup(x => x.isInactiveRoleBadlyConfigured()).returns(() => false)
 
         // ACT
         const sut = new InactivityManager(this.client.object)
@@ -186,6 +187,30 @@ export class InactivityManagerTestFixture
         this.member.verify(x =>
             x.addRole("inactive-role", It.isAnyString()),
             Times.once())
+    }
+
+    @AsyncTest()
+    public async inactive_role_not_added_if_badly_configured()
+    {
+        // ARRANGE
+        const now = new Date(2000, 1, 10)
+        this.guildUsers.set(this.memberId, new Date(2000, 1, 1))
+
+        const inactiveRole = Mock.ofType<Role>()
+        inactiveRole.setup(x => x.id).returns(() => "inactive-role")
+        this.guild.setup(x => x.inactiveRole).returns(() => inactiveRole.object)
+        this.guild.setup(x => x.inactiveRoleId).returns(() => "inactive-role")
+        this.guild.setup(x => x.isInactiveRoleConfigured()).returns(() => true)
+        this.guild.setup(x => x.isInactiveRoleBadlyConfigured()).returns(() => true)
+
+        // ACT
+        const sut = new InactivityManager(this.client.object)
+        await sut.manageInactiveUsersInGuild(this.guild.object, now)
+
+        // ASSERT
+        this.member.verify(x =>
+            x.addRole("inactive-role", It.isAnyString()),
+            Times.never())
     }
 
     @AsyncTest()

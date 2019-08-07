@@ -33,6 +33,7 @@ export class ActivityRegistererTestFixture
         this.guild.setup(x => x.allowRoleAddition).returns(() => true)
         this.guild.setup(x => x.isMemberIgnored(It.isAny())).returns(() => false)
         this.guild.setup(x => x.isActiveRoleConfigured()).returns(() => true)
+        this.guild.setup(x => x.isActiveRoleBadlyConfigured()).returns(() => false)
         this.guild.setup(x => x.activeRoleId).returns(() => this.activeRoleId)
 
         this.guildUsers = new Map<string, Date>()
@@ -131,6 +132,22 @@ export class ActivityRegistererTestFixture
         // ARRANGE
         void (this.guild.object.isActiveRoleConfigured())
         this.guild.setup(x => x.isActiveRoleConfigured()).returns(() => false)
+
+        // ACT
+        const sut = new ActivityRegisterer(this.client)
+        await sut.registerActivity(this.guild.object, this.member.object, this.channelName)
+
+        // ASSERT
+        this.member.verify(x => x.addRole(It.isAny()), Times.never())
+        this.member.verify(x => x.addRole(It.isAny(), It.isAny()), Times.never())
+    }
+
+    @AsyncTest()
+    public async register_activity_does_not_update_member_if_active_role_badly_configured()
+    {
+        // ARRANGE
+        void (this.guild.object.isActiveRoleBadlyConfigured())
+        this.guild.setup(x => x.isActiveRoleBadlyConfigured()).returns(() => true)
 
         // ACT
         const sut = new ActivityRegisterer(this.client)

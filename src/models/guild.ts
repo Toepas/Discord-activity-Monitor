@@ -59,17 +59,25 @@ export default class Guild extends BotGuild
         return (this.activeRoleId // Guild is configured with an active role
             && this.activeRoleId.length > 0 // Configured active role is valid snowflake
             && this.activeRole // Configured snowflake corresponds to a valid role
-            && this.canBotManageRole(this.activeRole) // Role hierarchy is configured to allow the bot to manage this role
         ) as boolean
+    }
+
+    public isActiveRoleBadlyConfigured(): boolean
+    {
+        return this.isActiveRoleConfigured() && !this.canBotManageRole(this.activeRole!) // Role hierarchy is configured to allow the bot to manage this role
     }
 
     public isInactiveRoleConfigured(): boolean
     {
         return (this.inactiveRoleId // Guild is configured with an inactive role
             && this.inactiveRoleId.length > 0 // Configured inactive role is valid snowflake
-            && !!this.inactiveRole // Configured snowflake corresponds to a valid role
-            && this.canBotManageRole(this.inactiveRole) // Role hierarchy is configured to allow the bot to manage this role
+            && this.inactiveRole // Configured snowflake corresponds to a valid role
         ) as boolean
+    }
+
+    public isInactiveRoleBadlyConfigured(): boolean
+    {
+        return this.isActiveRoleConfigured() && !this.canBotManageRole(this.inactiveRole!) // Role hierarchy is configured to allow the bot to manage this role
     }
 
     public loadRecord(record: any): void

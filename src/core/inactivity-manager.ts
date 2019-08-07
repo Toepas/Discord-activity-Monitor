@@ -19,7 +19,7 @@ export default class InactivityManager
 
         await guild.loadDocument()
 
-        if (!guild.isActiveRoleConfigured())
+        if (guild.isActiveRoleBadlyConfigured())
             return
 
         Logger.debugLog(`Managing inactives for guild ${guild.id}`)
@@ -60,7 +60,7 @@ export default class InactivityManager
         const reasonStr = `No activity detected within last ${guild.inactiveThresholdDays} days`
         await member.removeRole(guild.activeRole!.id, reasonStr)
 
-        if (guild.isInactiveRoleConfigured())
+        if (guild.isInactiveRoleConfigured() && !guild.isInactiveRoleBadlyConfigured())
             await member.addRole(guild.inactiveRoleId, reasonStr)
 
         guild.users.delete(member.id)
