@@ -7,18 +7,13 @@ export default class InactivityManager
     public async manageInactiveUsersInAllGuilds()
     {
         await Logger.debugLog("Beginning guild iteration to manage inactive users")
-        for (const guild of this.client.djs.guilds.values())
-            await this.manageInactiveUsersInGuild(guild.id)
+        for (const djsGuild of this.client.djs.guilds.values())
+            await this.manageInactiveUsersInGuild(new Guild(djsGuild))
         await Logger.debugLog("Guilds iteration complete")
     }
 
-    public async manageInactiveUsersInGuild(guildId: string)
+    public async manageInactiveUsersInGuild(guild: Guild, now?: Date)
     {
-        const djsGuild = this.client.djs.guilds.get(guildId)
-        if (!djsGuild)
-            return
-
-        const guild = new Guild(djsGuild)
         if (!guild.botHasPermissions(this.client.config.requiredPermissions))
             return
 
@@ -36,7 +31,7 @@ export default class InactivityManager
                 continue
 
             // If the member has the active role but isn't in the database, add them
-            const now = new Date()
+            now = now || new Date()
             if (!guild.users.get(member.id))
             {
                 guild.users.set(member.id, now)
@@ -63,7 +58,7 @@ export default class InactivityManager
     private async markMemberInactive(guild: Guild, member: GuildMember)
     {
         const reasonStr = `No activity detected within last ${guild.inactiveThresholdDays} days`
-        await member.removeRole(guild.activeRole!, reasonStr)
+        await member.removeRole(guild.activeRole!.id, reasonStr)
 
         if (guild.isInactiveRoleConfigured())
             await member.addRole(guild.inactiveRoleId, reasonStr)
