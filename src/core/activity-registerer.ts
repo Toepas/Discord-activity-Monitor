@@ -31,8 +31,8 @@ export default class ActivityRegisterer
         // Exit if...
         if (!guild.allowRoleAddition                // ...the guild does not allow role additon
             || guild.isMemberIgnored(member)        // ...the member is ignored in this guild
-            || !guild.isActiveRoleConfigured()       // ...the active role is not configured in this guild
-            || guild.isActiveRoleBadlyConfigured()) // ...the active role is badly configured in this guild
+            || !guild.isRoleConfigured(guild.activeRoleId)       // ...the active role is not configured in this guild
+            || guild.isRoleBadlyConfigured(guild.activeRoleId)) // ...the active role is badly configured in this guild
             return
 
         // Update the user's role and database entry

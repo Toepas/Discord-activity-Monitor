@@ -16,10 +16,10 @@ async function invoke(_: string[], message: Message, client: IClient)
         await message.reply("Setup complete!")
 
         // TODO Clean up these messages; haven't done it yet as I plan to update setup soon anyway
-        if (message.guild.allowRoleAddition && message.guild.isActiveRoleBadlyConfigured())
+        if (message.guild.allowRoleAddition && message.guild.isRoleBadlyConfigured(message.guild.activeRoleId))
             await message.reply(`Please give <@${client.botId}> a role above ${message.guild.activeRole!.toString()} in the Discord role hierarchy, else role updating cannot function.`)
 
-        if (message.guild.isInactiveRoleBadlyConfigured())
+        if (message.guild.isRoleBadlyConfigured(message.guild.inactiveRoleId))
             await message.reply(`Please give <@${client.botId}> a role above ${message.guild.inactiveRole!.toString()} in the Discord role hierarchy, else role updating cannot function.`)
 
         Logger.logEvent("SetupCompleted")

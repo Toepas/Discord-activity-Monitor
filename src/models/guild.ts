@@ -54,30 +54,29 @@ export default class Guild extends BotGuild
             && role.hasPermission("MANAGE_ROLES")) // ...which has the permission to manage other roles
     }
 
-    public isActiveRoleConfigured(): boolean
+    /** True if the supplied snowflake is configured */
+    public isRoleConfigured(snowflake: string)
     {
-        return (this.activeRoleId // Guild is configured with an active role
-            && this.activeRoleId.length > 0 // Configured active role is valid snowflake
-            && this.activeRole // Configured snowflake corresponds to a valid role
-        ) as boolean
+        return (
+            snowflake
+            && snowflake !== "disabled"
+            && snowflake.length > 0
+            && this.djs.roles.has(snowflake)
+        )
     }
 
-    public isActiveRoleBadlyConfigured(): boolean
+    /** True if the supplied snowflake is configured, but badly */
+    public isRoleBadlyConfigured(snowflake: string)
     {
-        return this.isActiveRoleConfigured() && !this.canBotManageRole(this.activeRole!) // Role hierarchy is configured to allow the bot to manage this role
+        return this.isRoleConfigured(snowflake) // Role is valid and exists
+            && !this.canBotManageRole(this.djs.roles.get(snowflake)!) // Role hierarchy is configured to allow the bot to manage this role
     }
 
-    public isInactiveRoleConfigured(): boolean
+    /** True if the supplied snowflake is configured, and not configured badly */
+    public isRoleWellConfigured(snowflake: string)
     {
-        return (this.inactiveRoleId // Guild is configured with an inactive role
-            && this.inactiveRoleId.length > 0 // Configured inactive role is valid snowflake
-            && this.inactiveRole // Configured snowflake corresponds to a valid role
-        ) as boolean
-    }
-
-    public isInactiveRoleBadlyConfigured(): boolean
-    {
-        return this.isActiveRoleConfigured() && !this.canBotManageRole(this.inactiveRole!) // Role hierarchy is configured to allow the bot to manage this role
+        return this.isRoleConfigured(snowflake) // Role is valid and exists
+            && !this.isRoleBadlyConfigured(snowflake) // Role is not badly configured
     }
 
     public loadRecord(record: any): void
