@@ -60,7 +60,7 @@ export default class ActivityRegisterer
                 didRemoveInactiveRole = true
             }
 
-            Logger.logEvent("MarkedMemberActive", { guildId: guild.id, removedInactiveRole: didRemoveInactiveRole })
+            Logger.logEvent("MarkedMemberActive", { guildId: guild.id, memberId: member.id, removedInactiveRole: didRemoveInactiveRole })
         }
         catch (e)
         {

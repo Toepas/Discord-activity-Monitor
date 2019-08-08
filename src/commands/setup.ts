@@ -8,7 +8,7 @@ async function invoke(_: string[], message: Message, client: IClient)
 
     try
     {
-        Logger.logEvent("SetupInitiated")
+        Logger.logEvent("SetupInitiated", { guildId: message.guild.id })
 
         await setupHelper.walkThroughSetup(client, message)
         await message.guild.save()
@@ -22,7 +22,7 @@ async function invoke(_: string[], message: Message, client: IClient)
         if (message.guild.isRoleBadlyConfigured(message.guild.inactiveRoleId))
             await message.reply(`Please give <@${client.botId}> a role above ${message.guild.inactiveRole!.toString()} in the Discord role hierarchy, else role updating cannot function.`)
 
-        Logger.logEvent("SetupCompleted")
+        Logger.logEvent("SetupCompleted", { guildId: message.guild.id })
     }
     catch (e)
     {
