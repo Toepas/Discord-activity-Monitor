@@ -1,4 +1,13 @@
 # Changelog
+## v4.1.0
+### Added
+- Measures to reduce processing and API calls for incorrectly configured role hierarchies
+    - If the bot is lacking permissions to manage the active or inactive roles, members will not be processed
+- Warnings after setup if either the active or inactive role are not manageable by the bot
+- Logging of Discord API error code when failing to mark users active or inactive
+- Configuration option for the culling interval used to process inactive members
+- Unit tests for activity/inactivity rules
+
 ## v4.0.1
 ### Fixed
 - No event log when member marked active

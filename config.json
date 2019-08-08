@@ -7,4 +7,6 @@
     "dbClientConfig": {
         "compactionWriteCount": 100
     }
+    },
+    "cullingIntervalSec": 10800
 }
