@@ -31,8 +31,8 @@ export default class ActivityRegisterer
         // Exit if...
         if (!guild.allowRoleAddition                // ...the guild does not allow role additon
             || guild.isMemberIgnored(member)        // ...the member is ignored in this guild
-            || !guild.isActiveRoleConfigured()       // ...the active role is not configured in this guild
-            || guild.isActiveRoleBadlyConfigured()) // ...the active role is badly configured in this guild
+            || !guild.isRoleConfigured(guild.activeRoleId)       // ...the active role is not configured in this guild
+            || guild.isRoleBadlyConfigured(guild.activeRoleId)) // ...the active role is badly configured in this guild
             return
 
         // Update the user's role and database entry
@@ -46,6 +46,10 @@ export default class ActivityRegisterer
         try
         {
             const reasonStr = `Activity detected in channel '${channelName}'`
+
+            if (member.hasRole(guild.activeRoleId))
+                return
+
             await member.addRole(guild.activeRoleId, reasonStr)
 
             const hasInactiveRole = guild.inactiveRoleId && guild.inactiveRoleId !== "disabled"
@@ -56,7 +60,7 @@ export default class ActivityRegisterer
                 didRemoveInactiveRole = true
             }
 
-            Logger.logEvent("MarkedMemberActive", { guildId: guild.id, removedInactiveRole: didRemoveInactiveRole })
+            Logger.logEvent("MarkedMemberActive", { guildId: guild.id, memberId: member.id, removedInactiveRole: didRemoveInactiveRole })
         }
         catch (e)
         {
