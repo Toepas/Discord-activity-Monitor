@@ -3,7 +3,7 @@ FROM node:10
 WORKDIR /app
 
 COPY src/ ./src/
-COPY package*.json tsconfig.json config.json ./
+COPY package*.json tsconfig* config.json ./
 
 RUN npm ci
 RUN npm run build
