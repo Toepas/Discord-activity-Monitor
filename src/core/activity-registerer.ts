@@ -46,6 +46,10 @@ export default class ActivityRegisterer
         try
         {
             const reasonStr = `Activity detected in channel '${channelName}'`
+
+            if (member.hasRole(guild.activeRoleId))
+                return
+
             await member.addRole(guild.activeRoleId, reasonStr)
 
             const hasInactiveRole = guild.inactiveRoleId && guild.inactiveRoleId !== "disabled"
