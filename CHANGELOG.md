@@ -1,4 +1,12 @@
 # Changelog
+## v4.1.1
+### Updated
+- Activity registerer to not attempt to assign the active role to members who already have it
+
+### Fixed
+- Setup returning an error after completion if inactive role disabled
+- Logs not always including guildId and memberId (where relevant)
+
 ## v4.1.0
 ### Added
 - Measures to reduce processing and API calls for incorrectly configured role hierarchies
