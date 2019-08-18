@@ -1,4 +1,5 @@
 [![Build status](https://badge.buildkite.com/0721103d18e2921880c1f18df491229eea35b2075e3d58b270.svg)](https://buildkite.com/benji7425-discord/activity-monitor)
+![Health status](https://healthchecks.io/badge/757a86c5-43a4-4c74-a134-72ba9e7b391b/xJed9T7a.svg)
 # Discord Activity Monitor
 <!--summary-->
 A Discord bot to assign/remove a role from users in your guild based on whether or not they have been active lately
@@ -58,7 +59,7 @@ Each permission has a reason for being required, explained below.
 3. Run `npm run full-start` to compile and run the bot
 	- If you see yellow 'WARN' messages about peer dependencies, you can safely ignore these
 
-**Note for git users**  
+### Git users  
 If you cloned the repository with git, make sure you `git reset --hard vX.Y` to a specific version, as latest master isn't always production ready!
 
 ### Database
@@ -75,7 +76,6 @@ If you cloned the repository with git, make sure you `git reset --hard vX.Y` to 
 - You can omit the *nedb-data* volume mount if connecting to a MongoDB instance
 
 ## Need help?
-
 I am available for contact via my [support Discord server](https://discordapp.com/invite/SSkbwSJ). I will always do my best to respond, however I am often busy so can't always be available right away, and as this is a free service I may not always be able to resolve your query.
 
 ## Built With
