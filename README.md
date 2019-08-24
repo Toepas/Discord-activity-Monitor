@@ -1,5 +1,5 @@
 [![Build status](https://badge.buildkite.com/0721103d18e2921880c1f18df491229eea35b2075e3d58b270.svg)](https://buildkite.com/benji7425/activity-monitor)
-![Health status](https://healthchecks.io/badge/757a86c5-43a4-4c74-a134-72ba9e7b391b/xJed9T7a.svg)
+![Health status](https://healthchecks.io/badge/757a86c5-43a4-4c74-a134-72ba9e7b391b/EC5rCeDf/activity-monitor.svg)
 # Discord Activity Monitor
 <!--summary-->
 A Discord bot to assign/remove a role from users in your guild based on whether or not they have been active lately
