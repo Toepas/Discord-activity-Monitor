@@ -53,27 +53,37 @@ Each permission has a reason for being required, explained below.
 | Embed links    | Responses to 'help' requests use message embeds for nice formatting   |
 
 ## Self hosting
+### Manually
 1. Install [Node.js v10](https://nodejs.org/en/) and 
 2. Clone the repository, or download and extract the zip file (preferrably from the [release page](https://github.com/benji7425/discord-activity-monitor/releases))
 3. Create a new file config.json from a copy of config.sample.json; paste your bot token in the token field (between the quotes)
-3. Run `npm run full-start` to compile and run the bot
+4. Run `npm run full-start` to compile and run the bot
 	- If you see yellow 'WARN' messages about peer dependencies, you can safely ignore these
 
-### Git users  
+#### Git users  
 If you cloned the repository with git, make sure you `git reset --hard vX.Y` to a specific version, as latest master isn't always production ready!
+
+### Docker
+`docker run [OPTIONS] benji7425/discord-activity-monitor`
+
+#### Options
+- To gain access to the log files  
+    `-v /path/to/logs:/app/logs`
+- To provide a token (for the default configuration)  
+    `-e TOKEN="your-token-here"`
+- To maintain a persistent copy of the local database (for the default configuration)  
+    `-v /path/to/data:/app/nedb-data`
+- To provide your own configuration  
+    `-v /path/to/config.json:/app/config.json`
+
+#### Notes
+- **Due to limitations with volume mounting cross-OS you cannost use a Windows host with the inbuilt NeDB database**
+- View the image on Docker Hub [here](https://hub.docker.com/r/benji7425/discord-activity-monitor)
 
 ### Database
 - Out of the box the project uses [NeDB](https://github.com/louischatriot/nedb/) as a local database, storing the data in *./nedb-data*
 - Both [NeDB](https://github.com/louischatriot/nedb/) and [MongoDB](https://www.mongodb.com) are supported
 - Edit the connection string in [config.json](./config.json) or by setting the *DB_STRING* environment variable
-
-### Docker
-`docker run -v /path/to/logs:/app/logs -v /path/to/data:/app/nedb-data -e TOKEN="your-token-here" -e DB_STRING="your-db-string-here" benji7425/discord-activity-monitor`
-
-- **Due to limitations with volume mounting cross-OS you cannost use a Windows host with the inbuilt NeDB database**
-- View the image on Docker Hub [here](https://hub.docker.com/r/benji7425/discord-activity-monitor)
-- You can omit the *DB_STRING* environment variable if using the default local *nedb-data* database
-- You can omit the *nedb-data* volume mount if connecting to a MongoDB instance
 
 ## Need help?
 I am available for contact via my [support Discord server](https://discordapp.com/invite/SSkbwSJ). I will always do my best to respond, however I am often busy so can't always be available right away, and as this is a free service I may not always be able to resolve your query.

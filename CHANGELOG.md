@@ -1,4 +1,9 @@
 # Changelog
+## v4.1.2
+### Updated
+- Docker image to run with [forever](https://github.com/foreversd/forever)
+- Buildkite pipeline to build Docker image
+
 ## v4.1.1
 ### Updated
 - Activity registerer to not attempt to assign the active role to members who already have it

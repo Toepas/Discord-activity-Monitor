@@ -1,5 +1,5 @@
 {
-  "author": "Benji7425 <benji7425@pm.me> (http://benji7425.github.io/)",
+  "author": "benji7425 <benji7425@pm.me> (https://github.com/benji7425/)",
   "bugs": {
     "url": "https://github.com/benji7425/discord-activity-monitor/issues"
   },
@@ -38,5 +38,5 @@
     "test": "node --stack-trace-limit=1 ./test-runner.js"
   },
   "types": "dist/index.d.ts",
-  "version": "4.1.1"
+  "version": "4.1.2"
 }
