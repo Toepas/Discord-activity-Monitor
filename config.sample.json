@@ -4,9 +4,9 @@
     "serviceName": "Activity Monitor",
     "requiredPermissions": 268454912,
     "askTimeoutMs": 30000,
-    "dbClientConfig": {
+    "dbClientConfig":
+    {
         "compactionWriteCount": 100
-    }
     },
     "cullingIntervalSec": 10800
 }
