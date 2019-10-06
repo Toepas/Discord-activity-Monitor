@@ -1,4 +1,8 @@
 # Changelog
+## v4.1.3
+### Fixed
+- Invalid JSON in sample config file
+
 ## v4.1.2
 ### Updated
 - Docker image to run with [forever](https://github.com/foreversd/forever)
