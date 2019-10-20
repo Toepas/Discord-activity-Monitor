@@ -48,6 +48,7 @@ export class ActivityRegistererTestFixture
     {
         // ARRANGE
         const now = new Date()
+        this.member.setup(x => x.djs).returns(() => ({ roles: new Map() }) as any)
 
         // ACT
         const sut = new ActivityRegisterer(this.client)
