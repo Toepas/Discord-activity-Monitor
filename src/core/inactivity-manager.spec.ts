@@ -16,7 +16,7 @@ export class InactivityManagerTestFixture
     private activeRoleMembers: Map<string, GuildMember>
     private memberId: string = "member-id"
 
-    private client: IMock<Client<Message, GuildMember>>
+    private client: IMock<Client<Message, Guild, GuildMember>>
     private guild: IMock<Guild>
     private member: IMock<GuildMember>
     private activeRole: IMock<Role>
@@ -26,7 +26,7 @@ export class InactivityManagerTestFixture
     {
         this.guildUsers = new Map<string, Date>()
 
-        this.client = Mock.ofType<Client<Message, GuildMember>>()
+        this.client = Mock.ofType<Client<Message, Guild, GuildMember>>()
 
         this.member = Mock.ofType<GuildMember>()
         this.member.setup(x => x.id).returns(() => this.memberId)
