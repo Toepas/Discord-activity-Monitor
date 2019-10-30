@@ -1,7 +1,7 @@
 import { Role } from "discord.js"
-import { BotGuild, BotGuildMember } from "disharmony"
+import { DisharmonyGuild, DisharmonyGuildMember } from "disharmony"
 
-export default class Guild extends BotGuild
+export default class Guild extends DisharmonyGuild
 {
     private _users: Map<string, Date>
 
@@ -40,10 +40,10 @@ export default class Guild extends BotGuild
         )
     }
 
-    public isMemberIgnored(member: BotGuildMember): boolean
+    public isMemberIgnored(member: DisharmonyGuildMember): boolean
     {
         const isIgnoredIndividually = this.ignoredUserIds.indexOf(member.id) >= 0
-        const hasIgnoredRole = this.ignoredRoleIds.some(roleId => member.hasRole(roleId))
+        const hasIgnoredRole = this.ignoredRoleIds.some(roleId => member.djs.roles.has(roleId))
         return isIgnoredIndividually || hasIgnoredRole
     }
 

@@ -11,7 +11,7 @@ import ActivityRegisterer from "./activity-registerer"
 @TestFixture("Activity registerer")
 export class ActivityRegistererTestFixture
 {
-    private client: Client<Message, GuildMember, ActivityMonitorConfig>
+    private client: Client<Message, Guild, GuildMember, ActivityMonitorConfig>
     private guild: IMock<Guild>
     private member: IMock<GuildMember>
 
@@ -48,6 +48,7 @@ export class ActivityRegistererTestFixture
     {
         // ARRANGE
         const now = new Date()
+        this.member.setup(x => x.djs).returns(() => ({ roles: new Map() }) as any)
 
         // ACT
         const sut = new ActivityRegisterer(this.client)

@@ -47,7 +47,7 @@ export default class ActivityRegisterer
         {
             const reasonStr = `Activity detected in channel '${channelName}'`
 
-            if (member.hasRole(guild.activeRoleId))
+            if (member.djs.roles.has(guild.activeRoleId))
                 return
 
             await member.addRole(guild.activeRoleId, reasonStr)
@@ -71,6 +71,6 @@ export default class ActivityRegisterer
     }
 
     constructor(
-        private client: Client<Message, GuildMember, ActivityMonitorConfig>,
+        private client: Client<Message, Guild, GuildMember, ActivityMonitorConfig>,
     ) { }
 }
