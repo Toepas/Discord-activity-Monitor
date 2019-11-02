@@ -1,6 +1,6 @@
 import * as Joi from "@hapi/joi"
 import * as Cluster from "cluster"
-import { Client, forkWorkerClient, loadConfig, Logger } from "disharmony"
+import { DisharmonyClient, forkWorkerClient, loadConfig, Logger } from "disharmony"
 import { resolve } from "path"
 import commands from "./commands"
 import ActivityRegisterer from "./core/activity-registerer"
@@ -9,17 +9,17 @@ import GuildMember from "./models/guild-member"
 import Message from "./models/message"
 
 const configSchema = Joi.object().keys({ cullingIntervalSec: Joi.number().required() })
-const { config, configPath, isLocalDb } = loadConfig<ActivityMonitorConfig>(configSchema)
+const config = loadConfig<ActivityMonitorConfig>(configSchema)
 
 if (Cluster.isMaster)
 {
-    const client = new Client(commands, config!, Message, GuildMember)
+    const client = new DisharmonyClient(commands, config, Message, GuildMember)
     client.login(config.token)
         .then(() =>
         {
             new ActivityRegisterer(client).startListening()
-            setInterval(runInactivityManager, config.cullingIntervalSec * 1000, client, !isLocalDb)
-            runInactivityManager(client, !isLocalDb)
+            setInterval(runInactivityManager, config.cullingIntervalSec * 1000, client, !config.computedValues!.isLocalDb)
+            runInactivityManager(client, !config.computedValues!.isLocalDb)
                 .catch(err => Logger.debugLogError("Error running inactivity monitor for the first time. It is likely that subsequent executions will also error.", err))
         })
         .catch(async err =>
@@ -29,11 +29,11 @@ if (Cluster.isMaster)
         })
 }
 
-async function runInactivityManager(client: Client<Message>, useForkedProcess: boolean)
+async function runInactivityManager(client: DisharmonyClient<Message>, useForkedProcess: boolean)
 {
     const path = "./core/inactivity-manager"
     if (useForkedProcess)
-        forkWorkerClient(resolve(__dirname, path), configPath)
+        forkWorkerClient(resolve(__dirname, path), config.computedValues!.configPath)
     else
     {
         // tslint:disable-next-line: variable-name
