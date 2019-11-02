@@ -1,4 +1,4 @@
-import { DisharmonyMessage, IClient, Question } from "disharmony"
+import { Client, DisharmonyMessage, Question } from "disharmony"
 import Guild from "../models/guild"
 import Message from "../models/message"
 
@@ -69,7 +69,7 @@ const steps = [
 
 export default class SetupHelper
 {
-    public async walkThroughSetup(client: IClient, message: Message): Promise<void>
+    public async walkThroughSetup(client: Client, message: Message): Promise<void>
     {
         for (const step of steps)
         {

@@ -1,6 +1,6 @@
 // tslint:disable: no-unused-expression
 import { AsyncTest, Expect, Setup, TestFixture } from "alsatian"
-import { Client } from "disharmony"
+import { DisharmonyClient } from "disharmony"
 import { IMock, It, Mock, Times } from "typemoq"
 import ActivityMonitorConfig from "../models/activity-monitor-config"
 import Guild from "../models/guild"
@@ -11,7 +11,7 @@ import ActivityRegisterer from "./activity-registerer"
 @TestFixture("Activity registerer")
 export class ActivityRegistererTestFixture
 {
-    private client: Client<Message, Guild, GuildMember, ActivityMonitorConfig>
+    private client: DisharmonyClient<Message, Guild, GuildMember, ActivityMonitorConfig>
     private guild: IMock<Guild>
     private member: IMock<GuildMember>
 

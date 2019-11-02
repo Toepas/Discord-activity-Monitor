@@ -1,4 +1,4 @@
-import { LightClient, loadConfig, Logger } from "disharmony"
+import { LiteClient, LiteDisharmonyClient, loadConfig, Logger } from "disharmony"
 import Guild from "../models/guild"
 import GuildMember from "../models/guild-member"
 
@@ -74,15 +74,15 @@ export default class InactivityManager
     }
 
     constructor(
-        private client: LightClient,
+        private client: LiteClient,
     ) { }
 }
 
 if (!module.parent)
 {
     const configPath = process.argv[2]
-    const { config } = loadConfig(undefined, configPath)
-    const client = new LightClient(config)
+    const config = loadConfig(undefined, configPath)
+    const client = new LiteDisharmonyClient(config)
     const inactivityManager = new InactivityManager(client)
     client.login(config.token)
         .then(async () =>

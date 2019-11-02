@@ -1,4 +1,4 @@
-import { Client, Logger } from "disharmony"
+import { DisharmonyClient, Logger } from "disharmony"
 import ActivityMonitorConfig from "../models/activity-monitor-config"
 import Guild from "../models/guild"
 import GuildMember from "../models/guild-member"
@@ -71,6 +71,6 @@ export default class ActivityRegisterer
     }
 
     constructor(
-        private client: Client<Message, Guild, GuildMember, ActivityMonitorConfig>,
+        private client: DisharmonyClient<Message, Guild, GuildMember, ActivityMonitorConfig>,
     ) { }
 }
