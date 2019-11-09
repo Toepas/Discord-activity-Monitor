@@ -1,4 +1,10 @@
 # Changelog
+## v4.2.0
+### Added
+- Script `monitor.js` to restart the bot daily (usage optional)
+- Commands `import` and `export` for server data transfer
+- Config option to set bot 'playing' status
+
 ## v4.1.3
 ### Fixed
 - Invalid JSON in sample config file
