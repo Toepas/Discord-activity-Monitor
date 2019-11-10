@@ -53,6 +53,15 @@ Each permission has a reason for being required, explained below.
 | Manage roles  | Assign and remove the active role from users |
 | Embed links   | Respond to commands                          |
 
+## Troubleshooting
+
+- Test Activity Monitor's ability to reply by using the version command `@Activity Monitor version`
+- Double check that Activity Monitor has both *read* and *write* permissions in the channel you're using
+- Make sure you're actually mentioning the bot and *not the role with the same name*
+- Make sure you have the 'Administrator' permission if you're trying to use an admin command
+- Double check that you've given Activity Monitor all the necessary [permissions](#permissions)
+- Make sure that the 'Activity Monitor' role is higher in the server role hierarchy than the active/inactive roles
+
 ## Built With
 - [Node.js v10](https://nodejs.org/en/) - *Runtime*
 - [discord.js](https://github.com/discordjs/discord.js) - *Discord library*
