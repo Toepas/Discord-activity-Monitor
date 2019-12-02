@@ -15,6 +15,10 @@ A Discord bot to assign/remove a role from users in your guild based on whether 
 - Reward active members for participating in the community
 - Recognise how many inactive members your server has
 
+## Community instance
+A community member, [Oliver4888](https://github.com/oliver4888), is kindly offering public hosts of my Discord bots for other community members. If you are interested in using this community-provided instance, you can find more at https://bots.ol48.uk/.  
+Please note that I cannot personally verify or take responsibility for the integrity of a community-provided bot instance.
+
 ## Getting started
 Activity Monitor needs to be deployed before you can invite it to your Discord server. Please see [my written deployment guide](https://benji7425.io/discord-deployment) or [video tutorial](https://www.youtube.com/watch?v=DjQayKgcjGM) which can guide you through deployment even if you are a beginner.  
 Once you have deployed Activity Monitor then return here to follow the Discord setup instructions below.  
