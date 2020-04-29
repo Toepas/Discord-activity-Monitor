@@ -34,11 +34,10 @@ Use `@Activity Monitor help` to view available commands.
 **Admin only**  
 The setup command requires administrator permission in the Discord server.
 1. Create a role (or choose an existing one) to use to mark active users
-2. Make your chosen role *mentionable* (only needed until setup is complete)
-3. Put the bot's role *higher* in the list than your chosen role
-4. Run `@Activity Monitor setup` in a channel the bot can *read* and *write* in
+2. Put the bot's role *higher* in the list than your chosen role
+3. Run `@Activity Monitor setup` in a channel the bot can *read* and *write* in
 	- If you've nicknamed the bot, substitute `@Activity Monitor` for it's nickname
-5. Respond with the information the bot asks you for, until setup is complete
+4. Respond with the information the bot asks you for, until setup is complete
 
 You can view your guild settings with `@Activity Monitor view-config`
 
