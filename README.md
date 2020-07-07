@@ -1,4 +1,4 @@
-[![Build status](https://badge.buildkite.com/ce28c71cc05af308de739cda90995254f8a80e676d127e08a7.svg?branch=master)](https://buildkite.com/benji7425/activity-monitor)
+![Build status](https://github.com/benjihiggins/discord-activity-monitor/workflows/Build%20%2B%20test/badge.svg?branch=master)
 
 # Discord Activity Monitor
 A Discord bot to assign/remove a role from users in your guild based on whether or not they have been active lately.
@@ -20,12 +20,12 @@ A community member, [Oliver4888](https://github.com/oliver4888), is kindly offer
 Please note that I cannot personally verify or take responsibility for the integrity of a community-provided bot instance.
 
 ## Getting started
-Activity Monitor needs to be deployed before you can invite it to your Discord server. Please see [my written deployment guide](https://benji7425.io/discord-deployment) or [video tutorial](https://www.youtube.com/watch?v=DjQayKgcjGM) which can guide you through deployment even if you are a beginner.  
+Activity Monitor needs to be deployed before you can invite it to your Discord server. Please see [my written deployment guide](https://benjihiggins.github.io/discord-deployment) or [video tutorial](https://www.youtube.com/watch?v=DjQayKgcjGM) which can guide you through deployment even if you are a beginner.  
 Once you have deployed Activity Monitor then return here to follow the Discord setup instructions below.  
 
 This button can be used for following the Heroku deployment steps.
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benji7425/discord-activity-monitor)
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benjihiggins/discord-activity-monitor)
 
 ## Discord setup
 Follow these instructions once you have deployed Activity Monitor and added it to your Discord server.
@@ -68,7 +68,7 @@ Each permission has a reason for being required, explained below.
 ## Built With
 - [Node.js v10](https://nodejs.org/en/) - *Runtime*
 - [discord.js](https://github.com/discordjs/discord.js) - *Discord library*
-- [disharmony](https://github.com/benji7425/disharmony) - *Bot framework*
+- [disharmony](https://github.com/benjihiggins/disharmony) - *Bot framework*
 
 ## Versioning
 [SemVer](http://semver.org/) is used for versioning. View available versions on the [tags page](https://github.com/your/project/tags).
