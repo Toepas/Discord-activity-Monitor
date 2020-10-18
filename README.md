@@ -1,4 +1,6 @@
-![Build status](https://github.com/benjihiggins/discord-activity-monitor/workflows/Build%20%2B%20test/badge.svg?branch=master)
+![Build status](https://github.com/bhigginsuk/discord-activity-monitor/workflows/Build%20%2B%20test/badge.svg?branch=master)
+
+**I am no longer actively maintaining this project. It should continue to work, but I can't guarantee that I'll fix it if future Discord updates cause issues.**
 
 # Discord Activity Monitor
 A Discord bot to assign/remove a role from users in your guild based on whether or not they have been active lately.
@@ -25,7 +27,7 @@ Once you have deployed Activity Monitor then return here to follow the Discord s
 
 This button can be used for following the Heroku deployment steps.
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/benjihiggins/discord-activity-monitor)
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/bhigginsuk/discord-activity-monitor)
 
 ## Discord setup
 Follow these instructions once you have deployed Activity Monitor and added it to your Discord server.
@@ -68,7 +70,7 @@ Each permission has a reason for being required, explained below.
 ## Built With
 - [Node.js v10](https://nodejs.org/en/) - *Runtime*
 - [discord.js](https://github.com/discordjs/discord.js) - *Discord library*
-- [disharmony](https://github.com/benjihiggins/disharmony) - *Bot framework*
+- [disharmony](https://github.com/bhigginsuk/disharmony) - *Bot framework*
 
 ## Versioning
 [SemVer](http://semver.org/) is used for versioning. View available versions on the [tags page](https://github.com/your/project/tags).
