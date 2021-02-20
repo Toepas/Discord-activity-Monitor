@@ -1,13 +1,13 @@
 {
-  "author": "benji7425 <benji7425@pm.me> (https://github.com/benji7425/)",
+  "author": "Benjamin Higgins <mail@brhiggins.com>",
   "bugs": {
-    "url": "https://github.com/benji7425/discord-activity-monitor/issues"
+    "url": "https://github.com/bhigginsuk/discord-activity-monitor/issues"
   },
   "dependencies": {
     "@hapi/joi": "^15.1.0",
     "@types/hapi__joi": "^15.0.3",
     "@types/node": "^11.13.0",
-    "disharmony": "git+https://github.com/benjihiggins/disharmony.git#v2.0.6",
+    "disharmony": "git+https://github.com/bhigginsuk/disharmony.git#v2.0.8",
     "typescript": "^3.9.7"
   },
   "description": "Discord bot to add/remove roles based on user activity",
@@ -21,13 +21,13 @@
     "!*.map",
     "!*.spec.*"
   ],
-  "homepage": "https://github.com/benji7425/discord-activity-monitor#readme",
+  "homepage": "https://github.com/bhigginsuk/discord-activity-monitor#readme",
   "license": "MIT",
   "main": "dist/index.js",
   "name": "discord-activity-monitor",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/benji7425/discord-activity-monitor.git"
+    "url": "git+https://github.com/bhigginsuk/discord-activity-monitor.git"
   },
   "scripts": {
     "build": "./node_modules/.bin/tsc --project tsconfig.prod.json",
