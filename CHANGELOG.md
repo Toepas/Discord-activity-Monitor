@@ -1,4 +1,11 @@
 # Changelog
+## v4.2.2
+### Updated
+- Package versinos for typescript and disharmony
+
+### Removed
+- Dead links in help command
+
 ## v4.2.1
 ### Updated
 - Package versions for typescript and disharmony
